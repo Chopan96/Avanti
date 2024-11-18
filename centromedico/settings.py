@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'avanti',
 ]
 
 MIDDLEWARE = [
@@ -75,12 +76,12 @@ WSGI_APPLICATION = 'centromedico.wsgi.application'
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.oracle",
-        "NAME": "localhost:1521/xepdb1",
-        "USER": "CHOPAN",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "centroavanti",
+        "USER": "postgres",
         "PASSWORD": "inacap2024",
-        "HOST": "",
-        "PORT": "",
+        "HOST": "localhost",
+        "PORT": "5432",
     }
 }
 
