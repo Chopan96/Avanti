@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Registrar Disponibilidad{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/disponibilidad.css' %}">
+{% endblock %}
+
+
+{% block content %}
+<div class="container mt-4">
+    <div class="formulario">
+        <h2>Registrar Disponibilidad del Médico</h2>
+        <form id="disponibilidadForm" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Guardar Disponibilidad</button>
+        </form>
+    </div>
+</div>
+<!-- Cargar el archivo JS -->
+<script src="{% static 'js/validar_rut.js' %}"></script>
+{% endblock %}

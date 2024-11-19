@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Inicio Personal Administrativo{% endblock %}
+
+{% block content %}
+
+
+<h2>Menú Principal - Personal Administrativo</h2>
+
+        <div class="row row-cols-1 row-cols-md-3 g-4 mt-3">
+            <!-- Registrar Pacientes -->
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title">Registrar y Gestionar Pacientes</h3>
+                        <p class="card-text">Aquí puede registrar nuevos pacientes y gestionar los datos personales de los pacientes existentes.</p>
+                    </div>
+                    <div class="card-footer">
+                        <a class="btn btn-primary w-100" href="gestionarPacientes.html">Gestionar Pacientes</a>
+                    </div>
+                </div>
+            </div>
+
+
+        <!-- Gestionar Disponibilidad de Médicos -->
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="card-title">Gestionar Disponibilidad de Médicos</h3>
+                    <p class="card-text">Gestione la disponibilidad de los médicos en el sistema, incluyendo la asignación de horarios y días de atención.</p>
+                </div>
+                <div class="card-footer">
+                    <a class="btn btn-primary w-100" href="gestionarDisponibilidadMedicos.html">Gestionar Médicos</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ver Horarios de Médicos -->
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3>Ver Horarios de Todos los Médicos</h3>
+                    <p>Consulte los horarios de atención de todos los médicos.</p>
+                </div>
+                <div class="card-footer">
+                    <a class="btn btn-primary w-100" href="horariosMedicos.html">Ver Horarios</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vender Bonos Médicos -->
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3>Vender Bonos Médicos</h3>
+                    <p>Realice la venta de bonos médicos a los pacientes para sus atenciones.</p>
+                </div>
+                <div class="card-footer">
+                    <a class="btn btn-primary w-100" href="venderBonos.html">Vender Bonos</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

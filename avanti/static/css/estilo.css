@@ -1,0 +1,126 @@
+nav{
+    font-family: 'Times New Roman', Times, serif, Geneva, Tahoma, sans-serif, 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    background-color: #054567;
+}
+.navbar{
+
+
+  left: 0;
+  width: 100%;
+
+}
+body{
+  background-image: url(../imagenes/background.png);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  background-color: rgba(0, 0, 0, 0.103);
+}
+
+
+
+
+a{
+    color: #ED6E0F;
+}
+a:hover {
+    color: #ED6E0F; /* Color al pasar el cursor */
+    text-decoration: underline; /* Añadir subrayado opcional */
+  }
+.navbar-brand{
+    font-size: 25px;
+    color: #ED6E0F !important
+}
+
+header{
+
+  left: 0;
+  width: 100%;
+    background-color: #054567;
+    padding: 2px;
+    text-align: center;
+    color: white;
+    font-size: 25px;
+}
+.btn-custom {
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+
+/* Botón azul personalizado */
+.custom-btn-blue {
+    background-color: #043c77; /* Color azul */
+    color: white;
+  }
+  .custom-btn-blue:hover {
+    background-color: #0056b3; /* Color azul oscuro al hacer hover */
+  }
+  
+  /* Botón naranja personalizado */
+  .custom-btn-orange {
+    background-color: #FF851B; /* Color naranja */
+    color: white;
+  }
+  .custom-btn-orange:hover {
+    background-color: #e07b18; /* Color naranja más oscuro al hacer hover */
+  }
+
+  /* Botón verde personalizado */
+  .custom-btn-green {
+    background-color: #28A745; /* Color verde */
+    color: white;
+  }
+  .custom-btn-green:hover {
+    background-color: #218838; /* Color verde más oscuro al hacer hover */
+  }
+
+
+
+#logo{
+    height: 80px;
+    width: 80px;
+    margin-right: 10px;
+
+}
+
+.footer{
+  position: fixed ;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  background-color: #054567;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  margin-top: 10px;
+  width: 100%;
+    
+}
+
+.card-img-top{
+  padding: 8px;
+}
+
+.card{
+  background-color:  rgb(95, 158, 160);
+  margin: 8px;
+  display: flex;
+  flex-direction: column;
+}
+.card-body {
+  flex-grow: 1; /* El contenido ocupa el espacio restante */
+}
+
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-info{
+  justify-content:flex-end end;
+}

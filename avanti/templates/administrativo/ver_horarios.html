@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Ver Horarios{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/calendario.css' %}">
+<style>
+    /* Ocultar el contenedor del calendario inicialmente */
+    .calendario {
+        display: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Horarios Disponibles</h2>
+
+    <!-- Formulario para ingresar el RUT del médico -->
+    <form id="medicoForm" class="mb-4">
+        <label for="medicoRut">Ingresa el RUT del médico:</label>
+        <input type="text" id="medicoRut" name="medicoRut" class="form-control" placeholder="">
+        <button type="submit" class="btn btn-primary mt-2">Ver Horarios</button>
+    </form>
+
+    <!-- Contenedor del calendario -->
+    <div id="calendario">
+        <div class="horarios">
+            <div id="calendar"></div>
+        </div>
+
+        <!-- Modal para mostrar detalles -->
+        <div id="overlay" style="display: none;"></div>
+        <div id="modal" style="display: none;">
+            <div id="scheduleContent"></div>
+            <button onclick="closeModal()">Cerrar</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.js"></script>
+<script src="{% static 'js/calendario_administrativo.js' %}"></script>
+{% endblock %}
