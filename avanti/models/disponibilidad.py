@@ -1,6 +1,8 @@
+import uuid
 from django.db import models
 
 class Disponibilidad(models.Model):
+    
     DIAS_SEMANA = [
         ('L', 'Lunes'),
         ('M', 'Martes'),
@@ -10,8 +12,9 @@ class Disponibilidad(models.Model):
         ('S', 'Sábado'),
         ('D', 'Domingo'),
     ]
-    medico_rut = models.OneToOneField(
-        'Medico', models.CASCADE, db_column='medico_rut', primary_key=True
+    id_disponibilidad = models.CharField(max_length=36, primary_key=True, default=uuid.uuid4, editable=False)
+    medico_rut = models.ForeignKey(
+        'Medico', models.CASCADE, db_column='medico_rut', 
     )
     dia = models.CharField(max_length=1, choices=DIAS_SEMANA, default='L')
     horainicio = models.TimeField(blank=True, null=True)
