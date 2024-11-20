@@ -1,0 +1,51 @@
+
+
+
+    {% extends 'base.html' %}
+    {% load static %}
+    {% block title %}Registrar Disponibilidad{% endblock %}
+    
+    {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/formulario.css' %}">
+    {% endblock %}
+    
+    
+    {% block content %}
+    <div class="container mt-4">
+        <div class="formulario">
+            <h1>Lista de Médicos</h1>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>RUT</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Especialidad</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for medico in medicos %}
+                    <tr>
+                        <td>{{ medico.rut.rut }}</td>
+                        <td>{{ medico.rut.nombre }}</td>
+                        <td>{{ medico.rut.apellido }}</td>
+                        <td>{{ medico.especialidad }}</td>
+                        <td>{{ medico.rut.mail }}</td>
+                        <td>{{ medico.rut.fono }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">No hay médicos registrados.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a href="{% url 'registrar_medico' %}">Registrar un nuevo médico</a>
+            </form>
+        </div>
+    </div>
+    <!-- Cargar el archivo JS -->
+    <script src="{% static 'js/validar_rut.js' %}"></script>
+    {% endblock %}

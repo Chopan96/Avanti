@@ -1,0 +1,28 @@
+
+
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Registrar Disponibilidad{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/formulario.css' %}">
+{% endblock %}
+
+
+{% block content %}
+<div class="container mt-4">
+    <div class="formulario">
+        <h1>Registrar Médico</h1>
+        <form method="post">
+            {% csrf_token %}
+            <h2>Información del Usuario</h2>
+            {{ usuario_form.as_p }}
+            <h2>Especialidad del Médico</h2>
+            {{ medico_form.as_p }}
+            <button type="submit">Registrar</button>
+        </form>
+    </div>
+</div>
+<!-- Cargar el archivo JS -->
+<script src="{% static 'js/validar_rut.js' %}"></script>
+{% endblock %}
