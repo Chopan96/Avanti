@@ -13,6 +13,7 @@ class Usuario(models.Model):
 
     class Meta:
         db_table = 'usuario'
-
+        
     def __str__(self):
-        return f"{self.rut}"
+        return f"{self.nombre} - {self.rut}"
+
