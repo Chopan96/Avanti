@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Inicio Paciente{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/paciente.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="row">
+        <div class="card p-4">
+        <h1>Reserva de tu Hora Médica</h1>
+        <form action="Medicos.html" method="get">
+            <label for="rut">Ingrese RUT Paciente:</label>
+            <input type="text" id="rut" name="rut" placeholder="Ingrese RUT Paciente" required><br><br>
+
+            <label for="sucursal">Sucursal:</label>
+            <select id="sucursal" name="sucursal">
+                <option value="" disabled selected>Sucursal</option>
+                <option value="sucursal1">Sucursal 1</option>
+                <option value="sucursal2">Sucursal 2</option>
+            </select><br><br>
+
+            <label for="prevision">Previsión:</label>
+            <select id="prevision" name="prevision">
+                <option value="" disabled selected>Previsión</option>
+                <option value="fonasa">Fonasa</option>
+                <option value="isapre">Isapre</option>
+            </select><br><br>
+
+            <input type="submit" value="Siguiente">
+        </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

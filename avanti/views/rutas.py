@@ -5,3 +5,7 @@ def home(request):
 
 def personal(request):
     return render(request, 'administrativo/main.html')
+
+def paciente(request):
+    return render(request, 'paciente/main.html')
+

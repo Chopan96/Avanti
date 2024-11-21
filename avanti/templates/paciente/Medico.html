@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Inicio Paciente{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/paciente.css' %}">
+{% endblock %}
+
+{% block content %}
+<h1>Listado de Médicos</h1>
+<table border="1">
+    <thead>
+        <tr>
+            <th>RUT</th>
+            <th>Especialidad</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for medico in medicos %}
+            <tr>
+                <td>{{ medico.rut }}</td>
+                <td>{{ medico.especialidad }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

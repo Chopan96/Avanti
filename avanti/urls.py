@@ -13,6 +13,8 @@ urlpatterns = [
     path('horarios/', views.mostrar_horarios, name='mostrar_horarios'),
     path('registrar-medico/', views.registrar_medico, name='registrar_medico'),
     path('lista-medicos/', views.lista_medicos, name='lista_medicos'),
+    path('paciente/', views.paciente, name='paciente'),
+    path('medicos/', views.citas_medicos, name='citas_medicos'),
 ]
 
 
