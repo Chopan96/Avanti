@@ -1,0 +1,37 @@
+
+
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Registrar Disponibilidad{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/formulario.css' %}">
+{% endblock %}
+
+
+{% block content %}
+<div class="container mt-4">
+    <div class="formulario">
+
+
+<h1>Lista de Disponibilidades</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Médico</th>
+                <th>Día</th>
+                <th>Hora de Inicio</th>
+                <th>Hora de Fin</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for disponibilidad in disponibilidades %}
+            <tr>
+                <td>{{ disponibilidad.medico.rut }}</td>  <td>{{ disponibilidad.get_dia_display }}</td>
+                <td>{{ disponibilidad.horainicio }}</td>
+                <td>{{ disponibilidad.horafin }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endblock %}

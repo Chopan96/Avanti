@@ -13,6 +13,8 @@ urlpatterns = [
     path('horarios/', views.mostrar_horarios, name='mostrar_horarios'),
     path('registrar-medico/', views.registrar_medico, name='registrar_medico'),
     path('lista-medicos/', views.lista_medicos, name='lista_medicos'),
+    path('lista-disponibilidad/', views.lista_disponibilidad, name='lista_disponibilidad'),
+    path('api/horarios/', views.obtener_horarios, name='obtener_horarios'),
 ]
 
 

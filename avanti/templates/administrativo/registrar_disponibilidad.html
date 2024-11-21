@@ -11,7 +11,14 @@
 <div class="container mt-4">
     <div class="formulario">
         <h2>Registrar Disponibilidad del Médico</h2>
-        <form id="disponibilidadForm" method="post">
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <form id="disponibilidadForm" method="POST">
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit" class="btn btn-primary">Guardar Disponibilidad</button>

@@ -33,7 +33,14 @@ document.addEventListener('DOMContentLoaded', function () {
             buttonText: {
                 today: 'Hoy' // Cambia "Today" a "Hoy"
             },
-            events: `/api/horarios/?medico_rut=${medicoRut}`, // Pasar el RUT al backend
+            events: `/obtener_horarios/?rut=${medicoRut}`, // URL para cargar eventos
+            eventSourceSuccess: function(events) {
+                if (events.length === 0) {
+                    alert("No hay horarios disponibles para el RUT ingresado.");
+                    calendarContainer.style.display = 'none'; // Ocultar calendario si no hay eventos
+                }
+                return events; // Asegúrate de devolver los eventos
+            },
             eventDidMount: function(info) {
                 // Si no hay eventos después de intentar cargar
                 if (info.eventSources[0].internalEventSource.meta.hasEvents === false) {
@@ -41,22 +48,24 @@ document.addEventListener('DOMContentLoaded', function () {
                     calendarContainer.style.display = 'none'; // Ocultar calendario
                 }
             },
-            eventClick: function (info) {
+            eventClick: function(info) {
                 const extendedProps = info.event.extendedProps;
-
+            
                 const eventDetails = `
                     <h4>Detalles del Horario</h4>
-                    <p><strong>Médico:</strong> ${extendedProps.medico_rut}</p>
+                    <p><strong>Médico (RUT):</strong> ${extendedProps.medico_rut}</p>
                     <p><strong>Sala:</strong> ${extendedProps.sala}</p>
                     <p><strong>Fecha:</strong> ${extendedProps.fecha}</p>
+                    <p><strong>Inicio:</strong> ${info.event.start.toLocaleString()}</p>
+                    <p><strong>Fin:</strong> ${info.event.end.toLocaleString()}</p>
                 `;
-
+            
                 document.getElementById('scheduleContent').innerHTML = eventDetails;
                 document.getElementById('overlay').style.display = 'block';
                 document.getElementById('modal').style.display = 'block';
-            },
+            }
         });
-
+        console.log(`/api/horarios/?medico_rut=${medicoRut}`);
         calendar.render();
     }
 });

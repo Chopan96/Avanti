@@ -12,9 +12,9 @@ class Disponibilidad(models.Model):
         ('S', 'Sábado'),
         ('D', 'Domingo'),
     ]
-    id_disponibilidad = models.CharField(max_length=36, primary_key=True, default=uuid.uuid4, editable=False)
-    medico_rut = models.ForeignKey(
-        'Medico', models.CASCADE, db_column='medico_rut', 
+    disponibilidad = models.CharField(max_length=36, primary_key=True, default=uuid.uuid4, editable=False)
+    medico = models.ForeignKey(
+        'Medico', on_delete=models.CASCADE, db_column='medico_rut', 
     )
     dia = models.CharField(max_length=1, choices=DIAS_SEMANA, default='L')
     horainicio = models.TimeField(blank=True, null=True)
@@ -23,4 +23,4 @@ class Disponibilidad(models.Model):
 
     class Meta:
         db_table = 'disponibilidad'
-        unique_together = ('medico_rut', 'dia', 'horainicio', 'horafin')
+        unique_together = ('medico', 'dia', 'horainicio', 'horafin')
