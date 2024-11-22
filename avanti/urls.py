@@ -9,16 +9,19 @@ urlpatterns = [
     path('personal/', views.personal, name='personal'),
     path('disponibilidad/nueva/', views.DisponibilidadCreateView.as_view(), name='registrar_disponibilidad'),
 
-        # URL del endpoint JSON
-    path('api/horarios/', views.obtener_horarios, name='obtener_horarios'),
-    # URL de la vista HTML que contiene el calendario
-    path('horarios/', views.mostrar_horarios, name='mostrar_horarios'),
+
+
     path('registrar-medico/', views.registrar_medico, name='registrar_medico'),
     path('lista-medicos/', views.lista_medicos, name='lista_medicos'),
     path('paciente/', views.paciente, name='paciente'),
     path('medicos/', views.citas_medicos, name='citas_medicos'),
     path('lista-disponibilidad/', views.lista_disponibilidad, name='lista_disponibilidad'),
-    path('api/horarios/', views.obtener_horarios, name='obtener_horarios'),
+
+
+    path('api/horarios/', views.HorarioFullCalendarView.as_view(), name='api_horarios'),
+    path('generar_horarios/<str:medico_rut>/', views.generar_horarios_view, name='generar_horarios'),
+    path('ver-horarios/<str:medico_rut>/', views.ver_horarios, name='ver_horarios'),
+
 ]
 
 

@@ -34,6 +34,8 @@
                         <td>{{ medico.especialidad }}</td>
                         <td>{{ medico.rut.mail }}</td>
                         <td>{{ medico.rut.fono }}</td>
+                        <td><a href="{% url 'administrativo:generar_horarios' medico.rut.rut %}"> Crear Horario </a></td>
+                        <td><a href="{% url 'administrativo:ver_horarios' medico.rut.rut %}">Ver Horario</a></td>
                     </tr>
                     {% empty %}
                     <tr>
@@ -42,7 +44,7 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <a href="{% url 'registrar_medico' %}">Registrar un nuevo médico</a>
+            <a href="{% url 'administrativo:registrar_medico' %}">Registrar un nuevo médico</a>
             </form>
         </div>
     </div>

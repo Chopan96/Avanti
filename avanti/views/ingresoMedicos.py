@@ -15,7 +15,7 @@ def registrar_medico(request):
             medico.rut = usuario  # Relacionar el usuario con el médico
             medico.save()
 
-            return redirect('lista_medicos')  # Cambia a la URL deseada
+            return redirect('administrativo:lista_medicos')  # Cambia a la URL deseada
     else:
         usuario_form = UsuarioForm()
         medico_form = MedicoForm()
@@ -25,7 +25,6 @@ def registrar_medico(request):
         'medico_form': medico_form,
     })
 
-from django.shortcuts import render
 
 
 def lista_medicos(request):
