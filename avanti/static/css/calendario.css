@@ -31,4 +31,61 @@
     background-color: bisque;
     margin: 40px;
     padding: 20px;
+    border-radius: 8px;
+}
+
+.fc {
+    font-family: Arial, sans-serif; /* Cambiar la fuente general */
+    font-size:medium ;
+}
+
+/* Cambiar el color de fondo de los eventos */
+.fc-event {
+    background-color: #11527d; /* Azul */
+    color: gray; /* Texto blanco */
+    border: 1px solid black;
+}
+
+
+/* Personalizar el encabezado */
+.fc-toolbar-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.fc-day {
+    background-color: #f9f9f9;
+    border: 1px solid #e5e5e5;
+}
+
+.fc-day-today {
+    background-color: #ff851bdc; /* Día actual */
+    border: 8px;
+}
+
+.fc-day-past {
+    background-color: darkgray; /* Días pasados */
+}
+
+
+.fc-timegrid-slot {
+    background-color: rgba(128, 128, 128, 0.763);
+    border-top: 1px solid #11527d;
+}
+
+.fc-timegrid-axis {
+    font-weight: bold;
+    color: #2c3e50; /* Etiquetas de hora */
+}
+
+.fc-col-header-cell {
+    background-color: #012d4b;
+    font-weight: bold;
+    text-align: center;
+}
+
+.fc-daygrid-day {
+    border: 1px solid #FF851B;
+    padding: 5px;
 }

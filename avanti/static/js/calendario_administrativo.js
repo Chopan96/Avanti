@@ -3,9 +3,11 @@ fetch(`/api/horarios/?medico_rut={{ medico.rut.rut }}`)
     .then(data => console.log(data)); // Inspecciona los datos
 
 document.addEventListener('DOMContentLoaded', function () {
+    
         const calendarEl = document.getElementById('calendar');
 
         const calendar = new FullCalendar.Calendar(calendarEl, {
+            
             initialView: 'timeGridWeek',
             locale: 'es',
             slotMinTime: "08:00",
