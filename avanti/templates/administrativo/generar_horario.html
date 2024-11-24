@@ -6,12 +6,13 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/horario.css' %}">
+<link rel="stylesheet" href="{% static 'css/formulario.css' %}">
 {% endblock %}
 
 
 {% block content %}
 <div class="container mt-4">
-    <div class="container mt-4">
+    <div class="formulario">
         <h2>Generar Horarios para el Médico {{ medico.rut }}</h2>
         <form method="post" class="formulario">
             {% csrf_token %}

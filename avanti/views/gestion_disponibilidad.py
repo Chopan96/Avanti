@@ -1,34 +1,48 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from ..models import Disponibilidad, Medico
 from ..forms import DisponibilidadForm
 from django.contrib import messages
 from django.views.generic import CreateView
-
 from django.urls import reverse
 
 
-def register_disponibilidad(request):
+
+
+
+def crear_disponibilidad(request, medico_rut):
+    medico = get_object_or_404(Medico, rut=medico_rut)
+
     if request.method == 'POST':
-        form = DisponibilidadForm(request.POST)
+        form = DisponibilidadForm(request.POST, medico_rut=medico_rut)
         if form.is_valid():
             form.save()
-            return redirect('administrativo/registrar_disponibilidad.html')  # Redirect to a list view
+            return redirect('administrativo:ver_disponibilidades', medico_rut=medico_rut)
     else:
-        form = DisponibilidadForm()
-    return render(request, 'disponibilidad_form.html', {'form': form})
+        form = DisponibilidadForm(medico_rut=medico_rut)
 
-class DisponibilidadCreateView(CreateView):
-    model = Disponibilidad
-    form_class = DisponibilidadForm
-    template_name = 'administrativo/registrar_disponibilidad.html'
+    return render(request, 'administrativo/crear_disponibilidad.html', {
+        'form': form,
+        'medico': medico,
+    })
 
-    def form_valid(self, form):
-        # Aquí puedes agregar la lógica personalizada si es necesario
-        return super().form_valid(form)
+def ver_disponibilidades(request, medico_rut):
+    disponibilidades = Disponibilidad.objects.filter(medico__rut=medico_rut)
+    medico = Medico.objects.get(rut=medico_rut)
+    return render(request, 'administrativo/ver_disponibilidades.html', {'disponibilidades': disponibilidades, 'medico': medico})
 
-    def get_success_url(self):
-        return reverse('administrativo:lista_disponibilidad')
+def editar_disponibilidad(request, disponibilidad_id):
+    disponibilidad = get_object_or_404(Disponibilidad, pk=disponibilidad_id)
+    if request.method == 'POST':
+        form = DisponibilidadForm(request.POST, instance=disponibilidad)
+        if form.is_valid():
+            form.save()
+            return redirect('administrativo:ver_disponibilidades', medico_rut=disponibilidad.medico.rut)
+    else:
+        form = DisponibilidadForm(instance=disponibilidad)
+    return render(request, 'administrativo/editar_disponibilidad.html', {'form': form, 'disponibilidad': disponibilidad})
 
-def lista_disponibilidad(request):
-    disponibilidades = Disponibilidad.objects.all()
-    return render(request, 'administrativo/lista_disponibilidad.html', {'disponibilidades': disponibilidades})
+def eliminar_disponibilidad(request, disponibilidad_id):
+    disponibilidad = get_object_or_404(Disponibilidad, pk=disponibilidad_id)
+    medico_rut = disponibilidad.medico.rut
+    disponibilidad.delete()
+    return redirect('administrativo:ver_disponibilidades', medico_rut=medico_rut)

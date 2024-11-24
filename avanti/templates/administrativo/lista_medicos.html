@@ -23,6 +23,8 @@
                         <th>Especialidad</th>
                         <th>Email</th>
                         <th>Teléfono</th>
+                        <th>Disponibilidad</th>
+                        <th>Horarios</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -34,8 +36,14 @@
                         <td>{{ medico.especialidad }}</td>
                         <td>{{ medico.rut.mail }}</td>
                         <td>{{ medico.rut.fono }}</td>
-                        <td><a href="{% url 'administrativo:generar_horarios' medico.rut.rut %}"> Crear Horario </a></td>
-                        <td><a href="{% url 'administrativo:ver_horarios' medico.rut.rut %}">Ver Horario</a></td>
+                        <td>
+                            <a href="{% url 'administrativo:crear_disponibilidad' medico.rut.rut %}">Crear Disponibilidad</a>
+                            <a href="{% url 'administrativo:ver_disponibilidades' medico.rut.rut %}">Ver Disponibilidades</a>
+                        </td>
+                        <td>
+                            <a href="{% url 'administrativo:generar_horarios' medico.rut.rut %}"> Crear Horario </a>
+                            <a href="{% url 'administrativo:ver_horarios' medico.rut.rut %}">Ver Horario</a>
+                        </td>
                     </tr>
                     {% empty %}
                     <tr>

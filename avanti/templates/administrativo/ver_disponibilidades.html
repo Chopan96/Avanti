@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Disponibilidades de {{ medico.rut.nombre }}{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/formulario.css' %}">
+{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="formulario">
+        <h2>Disponibilidades de {{ medico.rut.nombre }} {{ medico.rut.apellido }}</h2>
+        <a href="{% url 'administrativo:crear_disponibilidad' medico.rut.rut %}" class="btn btn-primary">Agregar Disponibilidad</a>
+        <table border="1" class="mt-3">
+            <thead>
+                <tr>
+                    <th>Día</th>
+                    <th>Hora Inicio</th>
+                    <th>Hora Fin</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for disponibilidad in disponibilidades %}
+                <tr>
+                    <td>{{ disponibilidad.get_dia_display }}</td>
+                    <td>{{ disponibilidad.horainicio }}</td>
+                    <td>{{ disponibilidad.horafin }}</td>
+                    <td>
+                        <a href="{% url 'administrativo:editar_disponibilidad' disponibilidad.disponibilidad %}">Editar</a>
+                        <a href="{% url 'administrativo:eliminar_disponibilidad' disponibilidad.disponibilidad %}" onclick="return confirm('¿Estás seguro de eliminar esta disponibilidad?');">Eliminar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">No hay disponibilidades registradas.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

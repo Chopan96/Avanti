@@ -1,15 +1,14 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from ..models import Horario,Medico,Sala, Horario, Disponibilidad
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from datetime import timedelta
+from django.views import View
+from datetime import timedelta,datetime
 from django.http import JsonResponse
-from django.utils.timezone import now
 from datetime import datetime
 import pytz
 from ..forms import GenerarHorarioForm
-
-
+import json
+from rest_framework.views import APIView
+from django.utils import timezone
 
 def generar_horarios_view(request, medico_rut):
     medico = get_object_or_404(Medico, rut=medico_rut)
@@ -102,26 +101,70 @@ def ver_horarios(request, medico_rut):
 
 
 
-
-class HorarioFullCalendarView(APIView):
+class HorarioFullCalendarView(View):
     def get(self, request):
-        # Obtener el parámetro del médico (ID o RUT)
-        medico_rut = request.GET.get('medico', None)
+        medico_rut = request.GET.get('medico_rut')
+        start = request.GET.get('start')
+        end = request.GET.get('end')
 
-        # Filtrar horarios si se proporciona un médico específico
-        horarios = Horario.objects.select_related('medico', 'sala')
-        if medico_rut:
-            horarios = horarios.filter(medico__rut=medico_rut)
+        if not medico_rut or not start or not end:
+            return JsonResponse({"error": "Faltan parámetros requeridos"}, status=400)
 
-        # Convertir los horarios a un formato compatible con FullCalendar
-        events = [
+        # Filtrar horarios por médico y rango de fechas
+        horarios = Horario.objects.filter(
+            medico__rut=medico_rut,
+            fechainicio__gte=start,
+            fechafin__lte=end
+        )
+
+        # Crear la respuesta en el formato esperado por FullCalendar
+        data = [
             {
-                "title": f"Dr./Dra. {horario.medico.rut.nombre}",
+                "id": str(horario.horario),  # Usar el UUID como identificador
+                "title": f"Sala {horario.sala.sala}",  # Información adicional opcional
                 "start": horario.fechainicio.isoformat(),
                 "end": horario.fechafin.isoformat(),
-                "description": f"Sala: {horario.sala.numero}"
+                "editable": True if horario.disponible else False,  # Ejemplo: solo editar si está disponible
             }
             for horario in horarios
         ]
 
-        return Response(events)
+        return JsonResponse(data, safe=False)
+    
+class EditarHorarioView(APIView):
+    def patch(self, request, horario_id):
+        try:
+            horario = Horario.objects.get(horario=horario_id)
+            
+            # Extraemos los datos enviados en la solicitud
+            data = json.loads(request.body)
+            
+            # Actualizamos los campos que vienen en la solicitud
+            if 'fechainicio' in data:
+                fechainicio_naive = data['fechainicio']
+                fechainicio = datetime.fromisoformat(fechainicio_naive)  # Convertir a datetime
+                fechainicio = timezone.make_aware(fechainicio, timezone.get_current_timezone())  # Aseguramos que tenga zona horaria
+                horario.fechainicio = fechainicio
+                
+            if 'fechafin' in data:
+                fechafin_naive = data['fechafin']
+                fechafin = datetime.fromisoformat(fechafin_naive)  # Convertir a datetime
+                fechafin = timezone.make_aware(fechafin, timezone.get_current_timezone())  # Aseguramos que tenga zona horaria
+                horario.fechafin = fechafin
+            
+            # Guardamos los cambios
+            horario.save()
+            
+            return JsonResponse({'status': 'success', 'message': 'Horario actualizado correctamente'}, status=200)
+        
+        except Horario.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Horario no encontrado'}, status=404)
+
+class EliminarHorarioView(APIView):
+    def delete(self, request, horario_id):
+        try:
+            horario = Horario.objects.get(horario=horario_id)
+            horario.delete()
+            return JsonResponse({'status': 'success', 'message': 'Horario eliminado correctamente'}, status=200)
+        except Horario.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Horario no encontrado'}, status=404)

@@ -8,14 +8,26 @@
 
 {% block content %}
 <div class="container mt-4">
-    <div class = "contenedor">
+    <div class="contenedor">
         <h1>Horarios de {{ medico.rut.nombre }} {{ medico.rut.apellido }}</h1>
         <div id="calendario" style="display: block;">
-            <div id="calendar"></div>
+            <div id="calendar" data-medico-rut="{{ medico.rut.rut }}"></div>
+        </div>
+
+        <!-- Botones para editar y eliminar horario -->
+        <div id="horario-actions" style="display: none;">
+            <h3>Editar Horario</h3>
+            <label>Inicio:</label>
+            <input type="datetime-local" id="fechainicio">
+            <label>Fin:</label>
+            <input type="datetime-local" id="fechafin">
+            <button id="saveBtn">Guardar Cambios</button>
+            <button id="deleteBtn">Eliminar Horario</button>
         </div>
     </div>
 </div>
 {% endblock %}
+
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.js"></script>
 <script src="{% static 'js/calendario_administrativo.js' %}"></script>

@@ -1,5 +1,6 @@
+
 from .rutas import personal,home,paciente
-from .gestion_disponibilidad import DisponibilidadCreateView,lista_disponibilidad,register_disponibilidad
-from .gestion_horarios import ver_horarios, HorarioFullCalendarView, generar_horarios_view
+from .gestion_disponibilidad import crear_disponibilidad,ver_disponibilidades,editar_disponibilidad,eliminar_disponibilidad
+from .gestion_horarios import ver_horarios, HorarioFullCalendarView, generar_horarios_view,EditarHorarioView,EliminarHorarioView
 from .ingresoMedicos import registrar_medico,lista_medicos
 from .gestion_medico import citas_medicos
