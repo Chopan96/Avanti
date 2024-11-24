@@ -23,13 +23,13 @@ class DisponibilidadForm(forms.ModelForm):
         horainicio = cleaned_data.get('horainicio')
         horafin = cleaned_data.get('horafin')
 
-        # Validar superposición de horarios
+        # Validar superposición de horarios excluyendo la instancia actual
         if medico and dia and horainicio and horafin:
-            disponibilidades = Disponibilidad.objects.filter(medico=medico, dia=dia)
+            disponibilidades = Disponibilidad.objects.filter(medico=medico, dia=dia).exclude(disponibilidad=self.instance.disponibilidad)
             for disponibilidad in disponibilidades:
                 if horainicio < disponibilidad.horafin and horafin > disponibilidad.horainicio:
                     raise ValidationError(f"Ya existe una disponibilidad del médico {medico.rut} en este horario.")
-        
+
         # Validar que horafin es posterior a horainicio
         if horainicio and horafin and horainicio >= horafin:
             raise ValidationError("La hora de fin debe ser posterior a la hora de inicio.")

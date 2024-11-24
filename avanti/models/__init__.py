@@ -18,4 +18,5 @@ from .pago import Pago
 from .prevision import Prevision
 from .reportes import Reportes
 from .sala import Sala
+from .sucursal import Sucursal
 from .usuario import Usuario

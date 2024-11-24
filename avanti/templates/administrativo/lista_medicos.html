@@ -37,12 +37,16 @@
                         <td>{{ medico.rut.mail }}</td>
                         <td>{{ medico.rut.fono }}</td>
                         <td>
-                            <a href="{% url 'administrativo:crear_disponibilidad' medico.rut.rut %}">Crear Disponibilidad</a>
-                            <a href="{% url 'administrativo:ver_disponibilidades' medico.rut.rut %}">Ver Disponibilidades</a>
+                            <ul>
+                                <li><a href="{% url 'administrativo:crear_disponibilidad' medico.rut.rut %}">Crear Disponibilidad</a></li>
+                                <li><a href="{% url 'administrativo:ver_disponibilidades' medico.rut.rut %}">Ver Disponibilidades</a></li>
+                            </ul>
                         </td>
                         <td>
-                            <a href="{% url 'administrativo:generar_horarios' medico.rut.rut %}"> Crear Horario </a>
-                            <a href="{% url 'administrativo:ver_horarios' medico.rut.rut %}">Ver Horario</a>
+                            <ul>
+                                <li><a href="{% url 'administrativo:generar_horarios' medico.rut.rut %}"> Crear Horario </a></li>
+                                <li><a href="{% url 'administrativo:ver_horarios' medico.rut.rut %}">Ver Horario</a></li>
+                            </ul>
                         </td>
                     </tr>
                     {% empty %}

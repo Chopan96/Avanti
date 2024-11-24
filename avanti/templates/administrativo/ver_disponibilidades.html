@@ -25,8 +25,10 @@
                     <td>{{ disponibilidad.horainicio }}</td>
                     <td>{{ disponibilidad.horafin }}</td>
                     <td>
-                        <a href="{% url 'administrativo:editar_disponibilidad' disponibilidad.disponibilidad %}">Editar</a>
-                        <a href="{% url 'administrativo:eliminar_disponibilidad' disponibilidad.disponibilidad %}" onclick="return confirm('¿Estás seguro de eliminar esta disponibilidad?');">Eliminar</a>
+                        <ul>
+                        <li><a href="{% url 'administrativo:editar_disponibilidad' disponibilidad.disponibilidad %}">Editar</a></li>
+                        <li><a href="{% url 'administrativo:eliminar_disponibilidad' disponibilidad.disponibilidad %}" onclick="return confirm('¿Estás seguro de eliminar esta disponibilidad?');">Eliminar</a></li>
+                        </ul>
                     </td>
                 </tr>
                 {% empty %}
