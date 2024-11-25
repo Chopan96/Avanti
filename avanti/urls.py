@@ -32,7 +32,8 @@ urlpatterns = [
     path('ficha_clinica/<str:paciente_rut>/', views.ficha_clinica_view, name='ficha_clinica'),
     path('crear_ficha/<str:paciente_rut>/', views.crear_ficha_view, name='crear_ficha'),
 
-
+    #Citas
+    path('horarios/<str:medico_rut>/',views.ver_citas, name='ver_citas'),
 ]
 
 

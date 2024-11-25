@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Inicio Paciente{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/ver_agenda.css' %}">
+<link rel="stylesheet" href="{% static 'css/calendario_agenda.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="formulario">
+
+    <h1>Horarios del Médico: {{ medico.rut.nombre }}</h1>
+    <p><strong>Especialidad:</strong> {{ medico.especialidad }}</p>
+
+    <div class="table-horarios">
+        {% if horarios %}
+            {% for horario in horarios %}
+            <ul>
+                <li>
+                    <div class="hour">{{ horario.fechainicio|date:"H:i" }}</div>
+                    <div class="title">
+                        <strong>{{ horario.sala.nombre }}</strong><br>
+                        {{ horario.sala.direccion }}
+                    </div>
+                    <button type="button" class="btn btn-reservar" data-hora="{{ horario.fechainicio|date:"H:i" }}">
+                        Reservar
+                    </button>
+                </li>
+            </ul>
+            {% endfor %}
+        {% else %}
+            <p>No hay horarios disponibles para este médico.</p>
+        {% endif %}
+        
+        <div class="calendar-container">
+            <label for="fecha">Seleccione una fecha:</label>
+            <input type="date" id="fecha" class="form-control">
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/calendario_agenda.js' %}"></script>
+{% endblock %}

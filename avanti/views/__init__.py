@@ -5,3 +5,4 @@ from .gestion_horarios import ver_horarios, HorarioFullCalendarView, generar_hor
 from .ingresoMedicos import registrar_medico,lista_medicos
 from .gestion_medico import citas_medicos
 from .gestion_ficha import ficha_clinica_view,buscar_ficha_view,crear_ficha_view
+from .gestion_citas import ver_citas, listar_citas

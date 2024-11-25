@@ -3,25 +3,31 @@
 {% block title %}Inicio Paciente{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/paciente.css' %}">
+<link rel="stylesheet" href="{% static 'css/citas_medico.css' %}">
 {% endblock %}
 
 {% block content %}
-<h1>Listado de Médicos</h1>
-<table border="1">
-    <thead>
-        <tr>
-            <th>RUT</th>
-            <th>Especialidad</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for medico in medicos %}
+<div class="container" id="citas_medico">
+    <h2>Listado de Médicos</h2>
+    <table>
+        <thead>
             <tr>
-                <td>{{ medico.rut }}</td>
-                <td>{{ medico.especialidad }}</td>
+                <th>RUT</th>
+                <th>Especialidad</th>
+                <th>Acción</th>
             </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            {% for medico in medicos %}
+                <tr>
+                    <td>{{ medico.rut }}</td>
+                    <td>{{ medico.especialidad }}</td>
+                    <td>
+                        <a href="{% url 'administrativo:ver_citas' medico.rut.rut %}" class="btn btn-primary">Ver Agenda</a>
+                    </td>                
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

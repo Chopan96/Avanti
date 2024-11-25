@@ -2,3 +2,19 @@ pip install psycopg2
 pip install djangorestframework
 pip install pytz
 pip install tzdata
+
+
+gitignore
+
+1.-Crear archivo .gitignore en la carpeta raiz
+2.-Dentro de archivo .gitignore agregar esto:
+# Ignorar carpetas de Python cache
+__pycache__/
+*.py[cod]
+
+3.-configurar en la consola de git, para ignorar estos archivos
+si estan siendo rastreados
+
+git rm -r --cached .
+git add .
+git commit -m "Remove __pycache__ and add .gitignore"

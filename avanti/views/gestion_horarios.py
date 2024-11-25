@@ -130,7 +130,7 @@ class HorarioFullCalendarView(View):
         ]
 
         return JsonResponse(data, safe=False)
-    
+#REVISAR ESTE FRAGMENTO DE CODIGO
 class EditarHorarioView(APIView):
     def patch(self, request, horario_id):
         try:
