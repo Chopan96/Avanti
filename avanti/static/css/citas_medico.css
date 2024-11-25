@@ -1,0 +1,66 @@
+#citas_medico {
+    width: 80%;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: rgb(95, 158, 160); /* Fondo blanco para el contenedor */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    border-radius: 8px;
+}
+
+h2 {
+    text-align: center;
+    color: #000000; /* Texto blanco */
+    font-size: 0,5 rem;
+    padding: 10px 0;
+    border-radius: 4px; /* Bordes redondeados */
+    margin-bottom: 20px; /* Espacio debajo del título */
+}
+
+/* Tabla */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background-color: #e07b18;
+    color: #000000;
+}
+
+thead th {
+    padding: 10px;
+    font-size: 1.1rem;
+    text-align: left;
+}
+
+tbody tr:nth-child(even) {
+    background-color: bisque; /* Fondo gris claro para filas pares */
+}
+
+tbody tr:hover {
+    background-color: bisque; /* Cambio de color al pasar el ratón */
+}
+
+tbody td {
+    padding: 10px;
+    font-size: 1rem;
+    text-align: left;
+    
+}
+
+table, th, td {
+    border: 1px solid #000000; /* Borde ligero para la tabla */
+}
+
+table {
+    border-radius: 8px;
+    overflow: hidden; /* Borde redondeado en las esquinas */
+}
+
+/* Estilo para las celdas */
+td, th {
+    text-align: left;
+    padding: 10px;
+    font-size: 1rem;
+    background-color: bisque;
+}

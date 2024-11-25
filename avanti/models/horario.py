@@ -8,6 +8,7 @@ class Horario(models.Model):
     fechainicio = models.DateTimeField(blank=True, null=True)  # Fecha y hora de inicio del evento
     fechafin = models.DateTimeField(blank=True, null=True)    # Fecha y hora de fin del evento
     sala = models.ForeignKey('Sala', models.CASCADE, db_column='sala')
+    
     disponible = models.BooleanField(default=True)
     
     class Meta:
