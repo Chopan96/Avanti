@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block extra_css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/historial.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="formulario">
+
+    <h1>Crear Ficha Clínica</h1>
+    <form method="post">
+        {% csrf_token %}
+        
+        <!-- Formulario Ficha Clínica -->
+        <div>
+            <label for="{{ ficha_form.motivo.id_for_label }}">{{ ficha_form.motivo.label }}</label>
+            {{ ficha_form.motivo }}
+        </div>
+        <div>
+            <label for="{{ ficha_form.observaciones.id_for_label }}">{{ ficha_form.observaciones.label }}</label>
+            {{ ficha_form.observaciones }}
+        </div>
+    
+        <!-- Formulario Historial -->
+        <div>
+            <label for="{{ historial_form.edad.id_for_label }}">{{ historial_form.edad.label }}</label>
+            {{ historial_form.edad }}
+        </div>
+    
+        <!-- Formulario Alergias -->
+        <div>
+            <label for="{{ alergias_form.descripcion.id_for_label }}">{{ alergias_form.descripcion.label }}</label>
+            {{ alergias_form.descripcion }}
+        </div>
+    
+        <!-- Formulario Diagnósticos -->
+        <div>
+            <label for="{{ diagnosticos_form.descripcion.id_for_label }}">{{ diagnosticos_form.descripcion.label }}</label>
+            {{ diagnosticos_form.descripcion }}
+        </div>
+    
+        <!-- Formulario Enfermedades Base -->
+        <div>
+            <label for="{{ enfermedades_form.descripcion.id_for_label }}">{{ enfermedades_form.descripcion.label }}</label>
+            {{ enfermedades_form.descripcion }}
+        </div>
+    
+        <!-- Formulario Medicamentos -->
+        <div>
+            <label for="{{ medicamentos_form.nombre.id_for_label }}">{{ medicamentos_form.nombre.label }}</label>
+            {{ medicamentos_form.nombre }}
+        </div>
+    
+        <!-- Botón de Enviar -->
+        <button type="submit">Guardar</button>
+    </form>
+</div>
+
+{% endblock %}

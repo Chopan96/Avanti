@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Inicio Paciente{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/formulario.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="formulario">
+
+    <h1>Buscar o Crear Ficha Clínica</h1>
+    <form method="post" action="{% url 'administrativo:buscar_ficha' %}">
+        {% csrf_token %}
+        <label for="rut">Ingrese el RUT del paciente:</label>
+        <input type="text" id="rut" name="rut" placeholder="Ej: 12345678-9" required>
+        <button type="submit" name="action" value="buscar">Buscar Ficha Clínica</button>
+        <button type="submit" name="action" value="crear">Crear Ficha Clínica</button>
+    </form>
+</div>
+
+{% endblock %}

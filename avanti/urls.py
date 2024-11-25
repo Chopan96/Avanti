@@ -27,6 +27,11 @@ urlpatterns = [
     path('api/horarios/<uuid:horario_id>/eliminar/', views.EliminarHorarioView.as_view(), name='eliminar_horario'), 
     path('generar_horarios/<str:medico_rut>/', views.generar_horarios_view, name='generar_horarios'),
     path('ver-horarios/<str:medico_rut>/', views.ver_horarios, name='ver_horarios'),
+    #Ficha Clinica
+    path('buscar_ficha/', views.buscar_ficha_view, name='buscar_ficha'),
+    path('ficha_clinica/<str:paciente_rut>/', views.ficha_clinica_view, name='ficha_clinica'),
+    path('crear_ficha/<str:paciente_rut>/', views.crear_ficha_view, name='crear_ficha'),
+
 
 ]
 

@@ -1,7 +1,7 @@
 from django.db import models
 
 class Diagnosticos(models.Model):
-    diagnostico = models.CharField(primary_key=True, max_length=20)
+    diagnostico = models.AutoField(primary_key=True)
     descripcion = models.TextField(blank=True, null=True)
     historial = models.ForeignKey(
         'Historial', models.CASCADE, db_column='id_historial'
@@ -9,4 +9,3 @@ class Diagnosticos(models.Model):
 
     class Meta:
         db_table = 'diagnosticos'
-        unique_together = (('diagnostico', 'historial'),)

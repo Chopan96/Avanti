@@ -20,3 +20,4 @@ from .reportes import Reportes
 from .sala import Sala
 from .sucursal import Sucursal
 from .usuario import Usuario
+from .fichaclinica import FichaClinica

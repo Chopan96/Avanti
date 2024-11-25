@@ -4,3 +4,4 @@ from .gestion_disponibilidad import crear_disponibilidad,ver_disponibilidades,ed
 from .gestion_horarios import ver_horarios, HorarioFullCalendarView, generar_horarios_view,EditarHorarioView,EliminarHorarioView
 from .ingresoMedicos import registrar_medico,lista_medicos
 from .gestion_medico import citas_medicos
+from .gestion_ficha import ficha_clinica_view,buscar_ficha_view,crear_ficha_view

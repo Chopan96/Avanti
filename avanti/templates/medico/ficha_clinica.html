@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Inicio Paciente{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/formulario.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="formulario">
+
+    <h1>Gestión de Ficha Clínica</h1>
+
+        {% if success %}
+        <div class="alert alert-success">
+            ¡Ficha Clínica guardada exitosamente!
+        </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <h2>Ficha Clínica</h2>
+            {{ ficha_form.as_p }}
+
+            <h2>Historial</h2>
+            {{ historial_form.as_p }}
+
+            <h3>Alergias</h3>
+            {{ alergias_form.as_p }}
+
+            <h3>Diagnósticos</h3>
+            {{ diagnosticos_form.as_p }}
+
+            <h3>Enfermedades Base</h3>
+            {{ enfermedades_form.as_p }}
+
+            <h3>Medicamentos</h3>
+            {{ medicamentos_form.as_p }}
+
+            <button type="submit">Guardar</button>
+        </div>
+</div>
+{% endblock %}
