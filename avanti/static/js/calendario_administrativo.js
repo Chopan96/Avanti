@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'timeGridWeek',
         locale: 'es',
+        timeZone: 'local', // Usamos la zona horaria local del navegador
         slotMinTime: "08:00",
         slotMaxTime: "19:00",
         slotDuration: '00:30:00',
@@ -25,31 +26,61 @@ document.addEventListener('DOMContentLoaded', function () {
         eventClick: function (info) {
             const event = info.event;
             selectedEventId = event.id;
-            document.getElementById('fechainicio').value = event.start.toISOString().slice(0, 16);
-            document.getElementById('fechafin').value = event.end.toISOString().slice(0, 16);
+
+            // Convertir la hora de UTC a la zona horaria local antes de mostrarla
+            const fechaInicioLocal = new Date(event.start.getTime() - event.start.getTimezoneOffset() * 60000);
+            const fechaFinLocal = new Date(event.end.getTime() - event.end.getTimezoneOffset() * 60000);
+
+            // Asignar los valores al formulario de edición en el formato adecuado
+            document.getElementById('fechainicio').value = fechaInicioLocal.toISOString().slice(0, 16);
+            document.getElementById('fechafin').value = fechaFinLocal.toISOString().slice(0, 16);
+
             horarioActions.style.display = 'block';
+        },
+        eventDrop: function (info) {
+            const event = info.event;
+            // Convertir la nueva fecha de inicio y fin a la zona horaria local
+            const fechaInicioLocal = new Date(event.start.getTime() - event.start.getTimezoneOffset() * 60000);
+            const fechaFinLocal = new Date(event.end.getTime() - event.end.getTimezoneOffset() * 60000);
+
+            // Actualizamos los campos del formulario con las nuevas fechas
+            document.getElementById('fechainicio').value = fechaInicioLocal.toISOString().slice(0, 16);
+            document.getElementById('fechafin').value = fechaFinLocal.toISOString().slice(0, 16);
         }
     });
 
     calendar.render();
 
-    // Guardar cambios
+    // Convertir las fechas a la zona horaria local antes de enviarlas al backend
     saveBtn.addEventListener('click', function () {
-        const fechainicio = document.getElementById('fechainicio').value;
-        const fechafin = document.getElementById('fechafin').value;
-    
+        const fechainicio = new Date(document.getElementById('fechainicio').value);
+        const fechafin = new Date(document.getElementById('fechafin').value);
+        
+        // Convertir las fechas a la zona horaria local
+        const localTimezoneOffset = fechainicio.getTimezoneOffset(); // Offset en minutos
+
+        // Ajustar las fechas a la zona horaria local
+        fechainicio.setMinutes(fechainicio.getMinutes() - localTimezoneOffset);
+        fechafin.setMinutes(fechafin.getMinutes() - localTimezoneOffset);
+        
+        document.getElementById('fechainicio').value = fechainicio.toISOString().slice(0, 16);  // Convertir a formato ISO 8601 sin la zona horaria
+        document.getElementById('fechafin').value = fechafin.toISOString().slice(0, 16);  // Convertir a formato ISO 8601 sin la zona horaria
+        
         if (!selectedEventId) {
             alert("Por favor selecciona un evento para editar.");
             return;
         }
-    
+        
         fetch(`/api/horarios/${selectedEventId}/editar/`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': csrfToken // Incluir el token CSRF
             },
-            body: JSON.stringify({ fechainicio, fechafin })
+            body: JSON.stringify({ 
+                fechainicio: fechainicio.toISOString(), 
+                fechafin: fechafin.toISOString() 
+            })
         })
         .then(response => response.json())
         .then(data => {
@@ -73,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
             alert("Por favor selecciona un evento para eliminar.");
             return;
         }
-    
+
         fetch(`/api/horarios/${selectedEventId}/eliminar/`, {
             method: 'DELETE',
             headers: {
@@ -96,3 +127,4 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+

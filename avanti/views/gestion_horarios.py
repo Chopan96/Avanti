@@ -139,18 +139,35 @@ class EditarHorarioView(APIView):
             # Extraemos los datos enviados en la solicitud
             data = json.loads(request.body)
             
+            # Definir la zona horaria local (ajusta esto según tu zona horaria)
+            local_timezone = timezone.get_default_timezone()  # Usa la zona horaria configurada en settings.py
+            
             # Actualizamos los campos que vienen en la solicitud
             if 'fechainicio' in data:
                 fechainicio_naive = data['fechainicio']
-                fechainicio = datetime.fromisoformat(fechainicio_naive)  # Convertir a datetime
-                fechainicio = timezone.make_aware(fechainicio, timezone.get_current_timezone())  # Aseguramos que tenga zona horaria
-                horario.fechainicio = fechainicio
+                # Convertir la fecha de ISO 8601 a un objeto datetime (sin zona horaria, naive)
+                fechainicio = datetime.fromisoformat(fechainicio_naive)
+                
+                # Si la fecha ya es aware (tiene zona horaria), la convertimos a naive
+                if fechainicio.tzinfo is not None:
+                    fechainicio = fechainicio.replace(tzinfo=None)
+                
+                # Convertir la fecha naive a aware con la zona horaria correcta
+                fechainicio_aware = timezone.make_aware(fechainicio, local_timezone)
+                horario.fechainicio = fechainicio_aware
                 
             if 'fechafin' in data:
                 fechafin_naive = data['fechafin']
-                fechafin = datetime.fromisoformat(fechafin_naive)  # Convertir a datetime
-                fechafin = timezone.make_aware(fechafin, timezone.get_current_timezone())  # Aseguramos que tenga zona horaria
-                horario.fechafin = fechafin
+                # Convertir la fecha de ISO 8601 a un objeto datetime (sin zona horaria, naive)
+                fechafin = datetime.fromisoformat(fechafin_naive)
+                
+                # Si la fecha ya es aware (tiene zona horaria), la convertimos a naive
+                if fechafin.tzinfo is not None:
+                    fechafin = fechafin.replace(tzinfo=None)
+                
+                # Convertir la fecha naive a aware con la zona horaria correcta
+                fechafin_aware = timezone.make_aware(fechafin, local_timezone)
+                horario.fechafin = fechafin_aware
             
             # Guardamos los cambios
             horario.save()
