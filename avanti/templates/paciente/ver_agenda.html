@@ -3,9 +3,74 @@
 {% block title %}Horarios del Médico{% endblock %}
 
 {% block extra_css %}
-<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="{% static 'css/ver_agenda.css' %}">
-<link rel="stylesheet" href="{% static 'css/calendario_agenda.css' %}">
+<style>
+    .main-container {
+        display: flex;
+        gap: 20px;
+    }
+    .calendar-container {
+        flex: 2;
+    }
+    .list-container {
+        flex: 1;
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 8px;
+        background: #f9f9f9;
+        max-height: 400px; /* Tamaño específico */
+        overflow-y: auto; /* Scrollbar */
+    }
+    .list-container h3 {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    .horario-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+    }
+    .horario-item:last-child {
+        border-bottom: none;
+    }
+    .horario-item button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .horario-item button:hover {
+        background-color: #0056b3;
+    }
+    /* Botones de navegación alineados */
+    .fc-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    .fc-toolbar-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+    /* Resaltar días con horarios */
+    .fc-highlight-day {
+        background-color: #d4edda !important;
+        color: #155724;
+        font-weight: bold;
+    }
+    /* Días sin horarios */
+    .fc-disabled-day {
+        background-color: #e9ecef !important;
+        pointer-events: none;
+        cursor: default;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -13,101 +78,101 @@
     <h1>Horarios del Médico: {{ medico.rut.nombre }}</h1>
     <p><strong>Especialidad:</strong> {{ medico.especialidad }}</p>
 
-    <!-- Calendario de FullCalendar -->
-    <div id="calendar"></div>
-
-    <div class="table-horarios">
-        {% if horarios_por_fecha %}
+    <div class="main-container">
+        <div class="calendar-container">
+            <div id="calendar"></div>
+        </div>
+        <div class="list-container">
+            <h3>Horarios Disponibles</h3>
             <div id="horarios-list">
-                {% for fecha, horarios in horarios_por_fecha.items %}
-                    <div class="horarios-dia" data-fecha="{{ fecha }}">
-                        <h3>{{ fecha }}</h3>
-                        <ul>
-                            {% for horario in horarios %}
-                                <li data-fecha="{{ horario.fechainicio|date:"Y-m-d" }}">
-                                    <div class="hour">{{ horario.fechainicio|date:"H:i" }}</div>
-                                    <div class="title">
-                                        <strong>{{ horario.sala.nombre }}</strong><br>
-                                        {{ horario.sala.direccion }}
-                                    </div>
-                                    <button type="button" class="btn btn-reservar" data-hora="{{ horario.fechainicio|date:"H:i" }}">
-                                        Reservar
-                                    </button>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                {% endfor %}
+                <p>Seleccione un día en el calendario para ver los horarios disponibles.</p>
             </div>
-        {% else %}
-            <p>No hay horarios disponibles para este médico.</p>
-        {% endif %}
+        </div>
     </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
-<!-- Asegúrate de que jQuery se cargue antes de FullCalendar -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
-<!-- Carga FullCalendar después de jQuery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/locales/es.global.min.js"></script>
 
 <script>
-    // Datos de horarios pasados desde Django
-    var horarios = [
+    const horarios = [
         {% for fecha, horarios in horarios_por_fecha.items %}
             {% for horario in horarios %}
                 {
-                    "title": "{{ horario.sala.nombre }}",
-                    "start": "{{ horario.fechainicio|date:'Y-m-d H:i' }}",
-                    "description": "{{ horario.sala.direccion }}",
-                    "extendedProps": {
-                        "hora": "{{ horario.fechainicio|date:'H:i' }}",
-                        "sala": "{{ horario.sala.nombre }}",
-                        "direccion": "{{ horario.sala.direccion }}"
+                    title: "{{ horario.sala.nombre }}",
+                    start: "{{ horario.fechainicio|date:'Y-m-d H:i' }}",
+                    extendedProps: {
+                        fecha: "{{ horario.fechainicio|date:'Y-m-d' }}",
+                        hora: "{{ horario.fechainicio|date:'H:i' }}",
+                        sala: "{{ horario.sala.nombre }}",
+                        direccion: "{{ horario.sala.direccion }}"
                     }
                 },
             {% endfor %}
         {% endfor %}
     ];
 
-    document.addEventListener('DOMContentLoaded', function() {
-        var calendarEl = document.getElementById('calendar');
+    const fechasConHorarios = [...new Set(horarios.map(h => h.extendedProps.fecha))]; // Días únicos con horarios
 
-        // Inicializar FullCalendar
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            selectable: true,
+    document.addEventListener('DOMContentLoaded', function () {
+        const calendarEl = document.getElementById('calendar');
+        const horariosListEl = document.getElementById('horarios-list');
+
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            locale: 'es',
+            initialView: 'dayGridWeek',
             headerToolbar: {
-                left: 'prev,next today',
+                left: 'prev,next',
                 center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                right: ''
             },
-            events: horarios, // Aquí le pasamos los eventos a FullCalendar
-            dateClick: function(info) {
-                // Al hacer clic en una fecha, filtramos los horarios
-                var fechaSeleccionada = info.dateStr;
-                console.log('Fecha seleccionada:', fechaSeleccionada);  // Verifica la fecha seleccionada
+            events: horarios,
+            selectable: true,
+            dayCellDidMount: function (info) {
+                // Verificar si el día tiene horarios
+                if (fechasConHorarios.includes(info.date.toISOString().split('T')[0])) {
+                    info.el.classList.add('fc-highlight-day'); // Añadir clase de resaltado
+                }
+            },
+            dateClick: function (info) {
+                if (!fechasConHorarios.includes(info.dateStr)) return;
 
-                // Filtrar los horarios en la lista según la fecha seleccionada
-                const horariosList = document.getElementById('horarios-list');
-                const horariosDias = Array.from(horariosList.children);
-
-                horariosDias.forEach(dia => {
-                    const diaFecha = dia.getAttribute('data-fecha');
-                    console.log('Fecha del horario:', diaFecha);  // Verifica las fechas de los horarios
-
-                    if (diaFecha === fechaSeleccionada) {
-                        dia.style.display = '';
-                    } else {
-                        dia.style.display = 'none';
-                    }
-                });
+                const horariosFiltrados = horarios.filter(h => h.extendedProps.fecha === info.dateStr);
+                horariosListEl.innerHTML = horariosFiltrados.length > 0
+                    ? horariosFiltrados.map(horario => `
+                        <div class="horario-item">
+                            <div>
+                                <strong>${horario.extendedProps.hora}</strong><br>
+                                ${horario.extendedProps.sala}<br>
+                                ${horario.extendedProps.direccion}
+                            </div>
+                            <button type="button" data-hora="${horario.extendedProps.hora}">Agendar</button>
+                        </div>
+                    `).join('')
+                    : `<p>No hay horarios disponibles para el día seleccionado.</p>`;
+            },
+            eventContent: function () {
+                return null;
             }
         });
 
         calendar.render();
     });
 </script>
+
+<style>
+    .fc-disabled-day {
+        background-color: #e9ecef !important;
+        pointer-events: none;
+        cursor: default;
+    }
+    .fc-highlight-day {
+        background-color: #d4edda !important; /* Color de resaltado */
+        border: 1px solid #28a745; /* Borde para mayor visibilidad */
+    }
+</style>
 {% endblock %}
+
+

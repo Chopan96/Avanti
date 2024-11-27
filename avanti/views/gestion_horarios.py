@@ -9,6 +9,7 @@ from ..forms import GenerarHorarioForm
 import json
 from rest_framework.views import APIView
 from django.utils import timezone
+from django.contrib import messages
 
 def generar_horarios_view(request, medico_rut):
     medico = get_object_or_404(Medico, rut=medico_rut)
@@ -20,17 +21,16 @@ def generar_horarios_view(request, medico_rut):
             desde = form.cleaned_data["desde"]
             hasta = form.cleaned_data["hasta"]
 
-            # Lógica para generar horarios (usa la función `generar_horarios`)
+            # Lógica para generar horarios
             horarios = generar_horarios(desde, hasta, medico, sala)
 
-            return JsonResponse({
-                "status": "success",
-                "message": f"Se generaron {len(horarios)} horarios para el médico {medico.rut}."
-            })
-
+            # Agregar un mensaje de éxito
+            messages.success(request, f"Se generaron {len(horarios)} horarios para el médico {medico.rut}.")
+            return redirect('administrativo:lista_medicos')
         else:
-            return JsonResponse({"status": "error", "errors": form.errors}, status=400)
-
+            # Agregar un mensaje de error con los errores del formulario
+            messages.error(request, "Hubo un error al procesar el formulario. Revisa los datos ingresados.")
+            return redirect('administrativo:lista_medicos')
     else:
         form = GenerarHorarioForm()
         return render(request, 'administrativo/generar_horario.html', {'form': form, 'medico': medico})

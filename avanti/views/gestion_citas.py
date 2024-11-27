@@ -4,6 +4,8 @@ from ..models import Medico, Horario, Paciente, Prevision, Sucursal, Cita, Usuar
 from django.contrib import messages
 import re
 from datetime import datetime
+import logging
+logger = logging.getLogger(__name__)
 
 def normalizar_rut(rut):
     # Eliminar puntos y guiones
@@ -21,27 +23,32 @@ def formulario_reserva(request):
         sucursal = request.POST.get('sucursal')
         prevision = request.POST.get('prevision')
 
+        # Validar campos obligatorios
         if not (rut and sucursal and prevision):
-            messages.error(request, "Todos los campos son obligatorios.")
+            logger.error("Todos los campos son obligatorios.")
             return redirect('administrativo:formulario_reserva')
 
         # Normalizar el RUT
         rut_normalizado = normalizar_rut(rut)
 
-        try:
-            # Buscar al Usuario por el RUT normalizado
-            usuario = Usuario.objects.get(rut=rut_normalizado)
+        # Verificar si el usuario existe o crearlo
+        usuario, creado_usuario = Usuario.objects.get_or_create(
+            rut=rut_normalizado,
+            defaults={'nombre': '', 'apellido': '', 'password': '', 'fono': None, 'mail': ''}
+        )
 
-            # Verificar si el paciente ya existe
-            try:
-                paciente = Paciente.objects.get(rut=usuario)
-            except Paciente.DoesNotExist:
-                # Crear un nuevo paciente si no existe
-                paciente = Paciente.objects.create(rut=usuario)
+        if creado_usuario:
+            logger.info("Usuario creado automáticamente para proceder con la reserva.")
 
-        except Usuario.DoesNotExist:
-            messages.error(request, "Usuario no encontrado.")
-            return redirect('administrativo:formulario_reserva')
+
+        # Verificar si el paciente existe o crearlo
+        paciente, creado_paciente = Paciente.objects.get_or_create(
+            rut=usuario,
+            defaults={'direccion': ''}
+        )
+
+        if creado_paciente:
+            logger.info("Paciente registrado automáticamente para proceder con la reserva.")
 
         # Guardar en sesión
         request.session['paciente_rut'] = rut_normalizado

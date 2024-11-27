@@ -12,6 +12,15 @@
     
     {% block content %}
     <div class="container mt-4">
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
         <div class="formulario">
             <h1>Lista de Médicos</h1>
             <table border="1">
