@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Inicio Paciente{% endblock %}
+{% block title %}Reserva de Citas{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/paciente.css' %}">
@@ -10,29 +10,44 @@
 <div class="container d-flex justify-content-center align-items-center min-vh-100">
     <div class="row">
         <div class="card p-4">
-        <h1>Reserva de tu Hora Médica</h1>
-        <form action="Medicos.html" method="get">
-            <label for="rut">Ingrese RUT Paciente:</label>
-            <input type="text" id="rut" name="rut" placeholder="Ingrese RUT Paciente" required><br><br>
+            <h1>Reserva de tu Hora Médica</h1>
+            <form action="{% url 'administrativo:formulario_reserva' %}" method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="rut" class="form-label">Ingrese RUT Paciente:</label>
+                    <input type="text" id="rut" name="rut" class="form-control" placeholder="Ingrese RUT Paciente" required>
+                </div>
 
-            <label for="sucursal">Sucursal:</label>
-            <select id="sucursal" name="sucursal">
-                <option value="" disabled selected>Sucursal</option>
-                <option value="sucursal1">Sucursal 1</option>
-                <option value="sucursal2">Sucursal 2</option>
-            </select><br><br>
+                <div class="mb-3">
+                    <label for="sucursal" class="form-label">Sucursal:</label>
+                    <select id="sucursal" name="sucursal" class="form-select" required>
+                        <option value="" disabled selected>Seleccione una Sucursal</option>
+                        {% for sucursal in sucursales %}
+                            <option value="{{ sucursal.sucursal }}">{{ sucursal.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-            <label for="prevision">Previsión:</label>
-            <select id="prevision" name="prevision">
-                <option value="" disabled selected>Previsión</option>
-                <option value="fonasa">Fonasa</option>
-                <option value="isapre">Isapre</option>
-            </select><br><br>
+                <div class="mb-3">
+                    <label for="prevision" class="form-label">Previsión:</label>
+                    <select id="prevision" name="prevision" class="form-select" required>
+                        <option value="" disabled selected>Seleccione una Previsión</option>
+                        {% for prevision in previsiones %}
+                            <option value="{{ prevision.prevision }}">{{ prevision.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-            <input type="submit" value="Siguiente">
-        </form>
+                <button type="submit" class="btn btn-primary">Siguiente</button>
+            </form>
         </div>
     </div>
+    {% if messages %}
+    <div class="alert alert-danger">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    </div>
+    {% endif %}
 </div>
-
 {% endblock %}

@@ -6,15 +6,17 @@ app_name = 'administrativo'
 
 urlpatterns = [
     path('', views.home, name='home'),
+    #Main Personal
     path('personal/', views.personal, name='personal'),
-    
+    #Main Paciente
+    path('paciente/', views.paciente, name='paciente'),
 
 
-
+    #Medicos desde vista administrativo
     path('registrar-medico/', views.registrar_medico, name='registrar_medico'),
     path('lista-medicos/', views.lista_medicos, name='lista_medicos'),
-    path('paciente/', views.paciente, name='paciente'),
-    path('medicos/', views.citas_medicos, name='citas_medicos'),
+    
+    
 
     #Disponibilidades
     path('crear-disponibilidad/<str:medico_rut>/', views.crear_disponibilidad, name='crear_disponibilidad'),
@@ -33,7 +35,10 @@ urlpatterns = [
     path('crear_ficha/<str:paciente_rut>/', views.crear_ficha_view, name='crear_ficha'),
 
     #Citas
-    path('horarios/<str:medico_rut>/',views.ver_citas, name='ver_citas'),
+    path('formulario-reserva/', views.formulario_reserva, name='formulario_reserva'),
+    path('medicos/', views.citas_medicos, name='citas_medicos'),
+    path('horarios/<str:medico_rut>/', views.ver_citas, name='ver_citas'),
+    path('reservar/<uuid:horario_id>/', views.reservar_cita, name='reservar_cita'),
 ]
 
 

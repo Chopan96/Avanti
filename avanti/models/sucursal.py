@@ -7,3 +7,6 @@ class Sucursal(models.Model):
 
     class Meta:
         db_table = 'sucursal'
+
+    def __str__(self):
+        return self.nombre

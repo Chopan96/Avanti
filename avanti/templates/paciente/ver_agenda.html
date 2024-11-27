@@ -1,46 +1,113 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Inicio Paciente{% endblock %}
+{% block title %}Horarios del Médico{% endblock %}
 
 {% block extra_css %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="{% static 'css/ver_agenda.css' %}">
 <link rel="stylesheet" href="{% static 'css/calendario_agenda.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="formulario">
-
     <h1>Horarios del Médico: {{ medico.rut.nombre }}</h1>
     <p><strong>Especialidad:</strong> {{ medico.especialidad }}</p>
 
+    <!-- Calendario de FullCalendar -->
+    <div id="calendar"></div>
+
     <div class="table-horarios">
-        {% if horarios %}
-            {% for horario in horarios %}
-            <ul>
-                <li>
-                    <div class="hour">{{ horario.fechainicio|date:"H:i" }}</div>
-                    <div class="title">
-                        <strong>{{ horario.sala.nombre }}</strong><br>
-                        {{ horario.sala.direccion }}
+        {% if horarios_por_fecha %}
+            <div id="horarios-list">
+                {% for fecha, horarios in horarios_por_fecha.items %}
+                    <div class="horarios-dia" data-fecha="{{ fecha }}">
+                        <h3>{{ fecha }}</h3>
+                        <ul>
+                            {% for horario in horarios %}
+                                <li data-fecha="{{ horario.fechainicio|date:"Y-m-d" }}">
+                                    <div class="hour">{{ horario.fechainicio|date:"H:i" }}</div>
+                                    <div class="title">
+                                        <strong>{{ horario.sala.nombre }}</strong><br>
+                                        {{ horario.sala.direccion }}
+                                    </div>
+                                    <button type="button" class="btn btn-reservar" data-hora="{{ horario.fechainicio|date:"H:i" }}">
+                                        Reservar
+                                    </button>
+                                </li>
+                            {% endfor %}
+                        </ul>
                     </div>
-                    <button type="button" class="btn btn-reservar" data-hora="{{ horario.fechainicio|date:"H:i" }}">
-                        Reservar
-                    </button>
-                </li>
-            </ul>
-            {% endfor %}
+                {% endfor %}
+            </div>
         {% else %}
             <p>No hay horarios disponibles para este médico.</p>
         {% endif %}
-        
-        <div class="calendar-container">
-            <label for="fecha">Seleccione una fecha:</label>
-            <input type="date" id="fecha" class="form-control">
-        </div>
     </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'js/calendario_agenda.js' %}"></script>
+<!-- Asegúrate de que jQuery se cargue antes de FullCalendar -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<!-- Carga FullCalendar después de jQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.js"></script>
+
+<script>
+    // Datos de horarios pasados desde Django
+    var horarios = [
+        {% for fecha, horarios in horarios_por_fecha.items %}
+            {% for horario in horarios %}
+                {
+                    "title": "{{ horario.sala.nombre }}",
+                    "start": "{{ horario.fechainicio|date:'Y-m-d H:i' }}",
+                    "description": "{{ horario.sala.direccion }}",
+                    "extendedProps": {
+                        "hora": "{{ horario.fechainicio|date:'H:i' }}",
+                        "sala": "{{ horario.sala.nombre }}",
+                        "direccion": "{{ horario.sala.direccion }}"
+                    }
+                },
+            {% endfor %}
+        {% endfor %}
+    ];
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+
+        // Inicializar FullCalendar
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            selectable: true,
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            events: horarios, // Aquí le pasamos los eventos a FullCalendar
+            dateClick: function(info) {
+                // Al hacer clic en una fecha, filtramos los horarios
+                var fechaSeleccionada = info.dateStr;
+                console.log('Fecha seleccionada:', fechaSeleccionada);  // Verifica la fecha seleccionada
+
+                // Filtrar los horarios en la lista según la fecha seleccionada
+                const horariosList = document.getElementById('horarios-list');
+                const horariosDias = Array.from(horariosList.children);
+
+                horariosDias.forEach(dia => {
+                    const diaFecha = dia.getAttribute('data-fecha');
+                    console.log('Fecha del horario:', diaFecha);  // Verifica las fechas de los horarios
+
+                    if (diaFecha === fechaSeleccionada) {
+                        dia.style.display = '';
+                    } else {
+                        dia.style.display = 'none';
+                    }
+                });
+            }
+        });
+
+        calendar.render();
+    });
+</script>
 {% endblock %}

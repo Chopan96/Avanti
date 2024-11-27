@@ -9,3 +9,6 @@ class Prevision(models.Model):
 
     class Meta:
         db_table = 'prevision'
+
+    def __str__(self):
+        return self.nombre
