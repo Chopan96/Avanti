@@ -3,6 +3,7 @@ from django.http import HttpResponseBadRequest
 from ..models import Medico, Horario, Paciente, Prevision, Sucursal, Cita, Usuario
 from django.contrib import messages
 import re
+from django.http import JsonResponse
 from datetime import datetime
 import logging
 logger = logging.getLogger(__name__)
@@ -95,21 +96,87 @@ def ver_citas(request, medico_rut):
     })
 
 
-def reservar_cita(request, horario_id):
+def reservar_cita(request):
+    if request.method == 'POST':
+        paciente_rut = request.session.get('paciente_rut')
+        prevision_id = request.session.get('prevision')
+        horario_id = request.POST.get('horario_id')
+        mail = request.POST.get('mail')
+        fono = request.POST.get('fono')
+
+        if not (paciente_rut and prevision_id and horario_id and mail and fono):
+            return JsonResponse({'success': False, 'error': 'Faltan datos obligatorios'})
+
+        # Verificar si el horario existe y está disponible
+        horario = get_object_or_404(Horario, horario=horario_id)
+
+        if not horario.disponible:
+            return JsonResponse({'success': False, 'error': 'El horario no está disponible'})
+
+        try:
+            # Actualizar datos de contacto del paciente
+            usuario = Usuario.objects.get(rut=paciente_rut)
+            usuario.mail = mail
+            usuario.fono = fono
+            usuario.save()
+
+            # Crear la cita médica
+            Cita.objects.create(
+                horario=horario,
+                prevision_id=prevision_id,
+                paciente_rut_id=paciente_rut,
+            )
+
+            # Marcar horario como ocupado
+            horario.disponible = False
+            horario.save()
+
+            return JsonResponse({'success': True})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+
+def seleccionar_horario(request, horario_id):
     """
-    Procesa la reserva de una cita seleccionada por el paciente.
+    Vista para confirmar el horario seleccionado y pasar al formulario de contacto.
     """
     paciente_rut = request.session.get('paciente_rut')
     prevision_id = request.session.get('prevision')
 
-    if not (paciente_rut and prevision_id):
+    if not paciente_rut:
         return redirect('administrativo:formulario_reserva')
 
-    horario = get_object_or_404(Horario, horario=horario_id)
+    horario = get_object_or_404(Horario, pk=horario_id, disponible=True)
 
-    # Validar que el horario esté disponible
-    if not horario.disponible:
-        return HttpResponseBadRequest("El horario seleccionado ya no está disponible.")
+    return render(request, 'paciente/formulario_contacto.html', {
+        'horario': horario,
+        'paciente_rut': paciente_rut,
+        'prevision_id': prevision_id,
+    })
+
+def confirmar_cita(request):
+    """
+    Procesa los datos de contacto y confirma la cita.
+    """
+    if request.method != 'POST':
+        return redirect('administrativo:formulario_reserva')
+
+    paciente_rut = request.POST.get('paciente_rut')
+    prevision_id = request.POST.get('prevision_id')
+    horario_id = request.POST.get('horario_id')
+    mail = request.POST.get('mail')
+    fono = request.POST.get('fono')
+
+    if not (paciente_rut and prevision_id and horario_id and mail and fono):
+        messages.error(request, "Todos los campos son obligatorios.")
+        return redirect('administrativo:formulario_reserva')
+
+    horario = get_object_or_404(Horario, pk=horario_id, disponible=True)
+
+    # Actualizar el contacto del usuario
+    usuario = Usuario.objects.get(rut=paciente_rut)
+    usuario.mail = mail
+    usuario.fono = fono
+    usuario.save()
 
     # Crear la cita
     Cita.objects.create(
@@ -118,9 +185,8 @@ def reservar_cita(request, horario_id):
         paciente_rut_id=paciente_rut,
     )
 
-    # Actualizar disponibilidad del horario
+    # Marcar el horario como no disponible
     horario.disponible = False
     horario.save()
 
-    # Redirigir a una página de confirmación
     return render(request, 'paciente/confirmacion_cita.html', {'horario': horario})

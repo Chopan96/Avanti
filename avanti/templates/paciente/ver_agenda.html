@@ -3,80 +3,34 @@
 {% block title %}Horarios del Médico{% endblock %}
 
 {% block extra_css %}
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
+
 <link rel="stylesheet" href="{% static 'css/ver_agenda.css' %}">
-<style>
-    .main-container {
-        display: flex;
-        gap: 20px;
-    }
-    .calendar-container {
-        flex: 2;
-    }
-    .list-container {
-        flex: 1;
-        border: 1px solid #ddd;
-        padding: 20px;
-        border-radius: 8px;
-        background: #f9f9f9;
-        max-height: 400px; /* Tamaño específico */
-        overflow-y: auto; /* Scrollbar */
-    }
-    .list-container h3 {
-        text-align: center;
-        margin-bottom: 10px;
-    }
-    .horario-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px;
-        border-bottom: 1px solid #ddd;
-    }
-    .horario-item:last-child {
-        border-bottom: none;
-    }
-    .horario-item button {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    .horario-item button:hover {
-        background-color: #0056b3;
-    }
-    /* Botones de navegación alineados */
-    .fc-toolbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 15px;
-    }
-    .fc-toolbar-title {
-        font-size: 1.5rem;
-        font-weight: bold;
-    }
-    /* Resaltar días con horarios */
-    .fc-highlight-day {
-        background-color: #d4edda !important;
-        color: #155724;
-        font-weight: bold;
-    }
-    /* Días sin horarios */
-    .fc-disabled-day {
-        background-color: #e9ecef !important;
-        pointer-events: none;
-        cursor: default;
-    }
-</style>
+<link rel="stylesheet" href="{% static 'css/modal.css' %}">
+
 {% endblock %}
 
 {% block content %}
 <div class="formulario">
     <h1>Horarios del Médico: {{ medico.rut.nombre }}</h1>
     <p><strong>Especialidad:</strong> {{ medico.especialidad }}</p>
+
+    <div id="contactModal" style="display:none;" class="modal-overlay">
+        <div class="modal-content">
+            <h3>Confirma tus datos de contacto</h3>
+            <p id="modalHora"></p>
+            <form id="contactForm">
+                <label for="mail">Correo electrónico:</label>
+                <input type="email" id="mail" name="mail" required>
+                
+                <label for="fono">Teléfono:</label>
+                <input type="tel" id="fono" name="fono" required>
+                
+                <input type="hidden" id="horarioIdInput" name="horario_id">
+            </form>
+            <button id="modalSubmit">Confirmar</button>
+            <button type="button" id="modalCancel">Cancelar</button>
+        </div>
+    </div>
 
     <div class="main-container">
         <div class="calendar-container">
@@ -114,31 +68,36 @@
         {% endfor %}
     ];
 
-    const fechasConHorarios = [...new Set(horarios.map(h => h.extendedProps.fecha))]; // Días únicos con horarios
+    const fechasConHorarios = [...new Set(horarios.map(h => h.extendedProps.fecha))];
 
     document.addEventListener('DOMContentLoaded', function () {
         const calendarEl = document.getElementById('calendar');
         const horariosListEl = document.getElementById('horarios-list');
-
+        const contactModal = document.getElementById('contactModal');
+        const modalSubmit = document.getElementById('modalSubmit');
+        const modalCancel = document.getElementById('modalCancel');
+        const mailInput = document.getElementById('mail');
+        const fonoInput = document.getElementById('fono');
+        const horarioIdInput = document.getElementById('horarioIdInput');
+        const modalHora = document.getElementById('modalHora');
+    
         const calendar = new FullCalendar.Calendar(calendarEl, {
             locale: 'es',
-            initialView: 'dayGridWeek',
+            initialView: 'dayGridMonth', // Cambia si necesitas otra vista inicial
             headerToolbar: {
                 left: 'prev,next',
                 center: 'title',
                 right: ''
             },
-            events: horarios,
-            selectable: true,
+            events: [], // No mostramos eventos en el calendario
             dayCellDidMount: function (info) {
-                // Verificar si el día tiene horarios
                 if (fechasConHorarios.includes(info.date.toISOString().split('T')[0])) {
-                    info.el.classList.add('fc-highlight-day'); // Añadir clase de resaltado
+                    info.el.classList.add('fc-highlight-day'); // Resaltar días
                 }
             },
             dateClick: function (info) {
                 if (!fechasConHorarios.includes(info.dateStr)) return;
-
+    
                 const horariosFiltrados = horarios.filter(h => h.extendedProps.fecha === info.dateStr);
                 horariosListEl.innerHTML = horariosFiltrados.length > 0
                     ? horariosFiltrados.map(horario => `
@@ -148,31 +107,75 @@
                                 ${horario.extendedProps.sala}<br>
                                 ${horario.extendedProps.direccion}
                             </div>
-                            <button type="button" data-hora="${horario.extendedProps.hora}">Agendar</button>
+                            <button type="button" class="agendar-btn" data-hora="${horario.extendedProps.hora}" data-horario-id="${horario.start}">Agendar</button>
                         </div>
                     `).join('')
-                    : `<p>No hay horarios disponibles para el día seleccionado.</p>`;
-            },
-            eventContent: function () {
-                return null;
+                    : `<p>No hay horarios disponibles para el día seleccionado.`;
             }
         });
-
+    
+        // Evento para abrir el modal cuando se hace clic en "Agendar"
+        document.addEventListener('click', function (e) {
+            if (e.target && e.target.classList.contains('agendar-btn')) {
+                const hora = e.target.getAttribute('data-hora');
+                const horarioId = e.target.getAttribute('data-horario-id');
+                modalHora.textContent = `Hora seleccionada: ${hora}`;
+                horarioIdInput.value = horarioId;
+    
+                // Mostrar el modal
+                contactModal.style.display = 'flex';
+            }
+        });
+    
+        // Evento para cerrar el modal
+        modalCancel.addEventListener('click', function () {
+            contactModal.style.display = 'none';
+        });
+    
+        // Evento para enviar el formulario del modal
+        modalSubmit.addEventListener('click', function () {
+            const mail = mailInput.value;
+            const fono = fonoInput.value;
+            const horarioId = horarioIdInput.value;
+    
+            console.log('Datos del formulario:', { mail, fono, horarioId });
+            // Verificar que todos los campos estén completos
+            if (mail && fono && horarioId) {
+                const data = new FormData();
+                data.append('mail', mail);
+                data.append('fono', fono);
+                data.append('horario_id', horarioId);
+    
+                // Enviar los datos para reservar la cita
+                fetch('{% url "administrativo:reservar_cita" %}', {
+                    method: 'POST',
+                    body: data,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Cita reservada con éxito');
+                        contactModal.style.display = 'none'; // Cerrar el modal
+                        // Actualizar la lista de horarios o realizar cualquier otra acción después de reservar la cita
+                    } else {
+                        alert(data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al reservar cita:', error);
+                });
+            } else {
+                alert('Todos los campos son obligatorios.');
+            }
+        });
+    
         calendar.render();
     });
+    
+    
 </script>
 
-<style>
-    .fc-disabled-day {
-        background-color: #e9ecef !important;
-        pointer-events: none;
-        cursor: default;
-    }
-    .fc-highlight-day {
-        background-color: #d4edda !important; /* Color de resaltado */
-        border: 1px solid #28a745; /* Borde para mayor visibilidad */
-    }
-</style>
+
 {% endblock %}
 
 
