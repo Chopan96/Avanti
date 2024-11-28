@@ -139,26 +139,26 @@
             const mail = mailInput.value;
             const fono = fonoInput.value;
             const horarioId = horarioIdInput.value;
-    
-            console.log('Datos del formulario:', { mail, fono, horarioId });
-            // Verificar que todos los campos estén completos
+        
             if (mail && fono && horarioId) {
                 const data = new FormData();
                 data.append('mail', mail);
                 data.append('fono', fono);
                 data.append('horario_id', horarioId);
-    
-                // Enviar los datos para reservar la cita
+        
                 fetch('{% url "administrativo:reservar_cita" %}', {
                     method: 'POST',
                     body: data,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}', // Asegúrate de incluir el CSRF token
+                    },
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert('Cita reservada con éxito');
+                        alert(data.message);
                         contactModal.style.display = 'none'; // Cerrar el modal
-                        // Actualizar la lista de horarios o realizar cualquier otra acción después de reservar la cita
+                        // Actualiza la interfaz si es necesario
                     } else {
                         alert(data.error);
                     }

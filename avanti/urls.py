@@ -39,8 +39,6 @@ urlpatterns = [
     path('formulario-reserva/', views.formulario_reserva, name='formulario_reserva'),
     path('medicos/', views.citas_medicos, name='citas_medicos'),
     path('horarios/<str:medico_rut>/', views.ver_citas, name='ver_citas'),
-    path('seleccionar_horario/<int:horario_id>/', views.seleccionar_horario, name='seleccionar_horario'),
-    path('confirmar_cita/', views.confirmar_cita, name='confirmar_cita'),
     path('reservar_cita/', views.reservar_cita, name='reservar_cita'),
 ]
 
