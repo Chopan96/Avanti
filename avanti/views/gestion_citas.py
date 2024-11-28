@@ -6,6 +6,7 @@ import re
 from django.http import JsonResponse
 from datetime import datetime
 import logging
+from uuid import UUID
 logger = logging.getLogger(__name__)
 
 def normalizar_rut(rut):
@@ -108,7 +109,11 @@ def reservar_cita(request):
             return JsonResponse({'success': False, 'error': 'Faltan datos obligatorios'})
 
         # Verificar si el horario existe y está disponible
-        horario = get_object_or_404(Horario, horario=horario_id)
+        try:
+            horario_uuid = UUID(horario_id)  # Asegúrate de que el horario_id sea un UUID válido
+            horario = get_object_or_404(Horario, horario=horario_uuid)
+        except ValueError:
+            return JsonResponse({'success': False, 'error': 'El ID de horario no es válido.'})
 
         if not horario.disponible:
             return JsonResponse({'success': False, 'error': 'El horario no está disponible'})

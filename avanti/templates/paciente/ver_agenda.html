@@ -51,6 +51,7 @@
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/locales/es.global.min.js"></script>
 
 <script>
+    
     const horarios = [
         {% for fecha, horarios in horarios_por_fecha.items %}
             {% for horario in horarios %}
@@ -61,7 +62,8 @@
                         fecha: "{{ horario.fechainicio|date:'Y-m-d' }}",
                         hora: "{{ horario.fechainicio|date:'H:i' }}",
                         sala: "{{ horario.sala.nombre }}",
-                        direccion: "{{ horario.sala.direccion }}"
+                        direccion: "{{ horario.sala.direccion }}",
+                        horario: "{{ horario.horario }}"
                     }
                 },
             {% endfor %}
@@ -107,11 +109,11 @@
                                 ${horario.extendedProps.sala}<br>
                                 ${horario.extendedProps.direccion}
                             </div>
-                            <button type="button" class="agendar-btn" data-hora="${horario.extendedProps.hora}" data-horario-id="${horario.start}">Agendar</button>
+                            <button type="button" class="agendar-btn" data-hora="${horario.extendedProps.hora}" data-horario-id="${horario.extendedProps.horario}">Agendar</button>
                         </div>
                     `).join('')
                     : `<p>No hay horarios disponibles para el día seleccionado.`;
-            }
+                }
         });
     
         // Evento para abrir el modal cuando se hace clic en "Agendar"
