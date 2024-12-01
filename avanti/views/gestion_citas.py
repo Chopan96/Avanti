@@ -5,8 +5,10 @@ import re
 from django.http import JsonResponse
 from datetime import datetime
 import logging
+from collections import defaultdict
 from uuid import UUID
-from django.utils.timezone import now
+from django.urls import reverse
+
 logger = logging.getLogger(__name__)
 
 def normalizar_rut(rut):
@@ -106,17 +108,17 @@ def reservar_cita(request):
         fono = request.POST.get('fono')
 
         if not (paciente_rut and prevision_id and horario_id and mail and fono):
-            return JsonResponse({'success': False, 'error': 'Faltan datos obligatorios'})
+            return JsonResponse({'success': False, 'error': 'Faltan datos obligatorios para generar la cita.'})
 
-        # Verificar si el horario existe y está disponible
         try:
-            horario_uuid = UUID(horario_id)  # Asegúrate de que el horario_id sea un UUID válido
+            # Validar el ID de horario
+            horario_uuid = UUID(horario_id)  # Verifica que sea un UUID válido
             horario = get_object_or_404(Horario, horario=horario_uuid)
         except ValueError:
             return JsonResponse({'success': False, 'error': 'El ID de horario no es válido.'})
 
         if not horario.disponible:
-            return JsonResponse({'success': False, 'error': 'El horario no está disponible'})
+            return JsonResponse({'success': False, 'error': 'El horario seleccionado no está disponible.'})
 
         try:
             # Actualizar datos de contacto del paciente
@@ -126,8 +128,8 @@ def reservar_cita(request):
             usuario.save()
 
             # Crear la cita médica
-            cita_id = f'CITA-{horario_id}-{paciente_rut}-{prevision_id}'  # Genera un ID único para la cita
-            Cita.objects.create(
+            cita_id = f'CITA-{horario_id}-{paciente_rut}-{prevision_id}'  # Genera un ID único
+            cita = Cita.objects.create(
                 cita=cita_id,
                 horario=horario,
                 prevision_id=prevision_id,
@@ -138,7 +140,124 @@ def reservar_cita(request):
             horario.disponible = False
             horario.save()
 
-            return JsonResponse({'success': True, 'message': 'Cita reservada con éxito'})
+            # Enviar la redirección como parte de la respuesta JSON
+            return JsonResponse({
+                'success': True,
+                'redirect_url': reverse('administrativo:resumen_cita', args=[cita.cita])
+            })
+
         except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)})
-        
+            return JsonResponse({'success': False, 'error': f'Ocurrió un error al generar la cita: {str(e)}'})
+
+    return JsonResponse({'success': False, 'error': 'Método no permitido.'})        
+
+def resumen_cita(request, cita_id):
+    cita = get_object_or_404(Cita, cita=cita_id)
+    return render(request, 'paciente/cita.html', {'cita': cita})
+
+def error_cita(request):
+    # Obtiene los mensajes de error si existen
+    return render(request, 'paciente/error_cita.html')
+
+
+#Citas ya generadas
+def listado_citas(request):
+    if request.method == 'POST':
+        rut_paciente = request.POST.get('rut')
+        try:
+            # Buscar el paciente por su RUT
+            paciente = Paciente.objects.get(rut=rut_paciente)
+
+            # Obtener las citas asociadas al paciente
+            citas = Cita.objects.filter(paciente_rut=paciente)
+
+            # Verifica que las citas existen
+            if not citas.exists():
+                messages.warning(request, "No se encontraron citas para este paciente.")
+                
+            return render(request, 'paciente/listado_cita.html', {'citas': citas})
+        except Paciente.DoesNotExist:
+            messages.error(request, "Paciente no encontrado. Verifique el RUT.")
+            return render(request, 'paciente/listado_cita.html')
+    
+    return render(request, 'paciente/buscar_rut.html')
+
+def editar_cita(request, medico_rut, cita):
+    # Recuperar el médico y la cita asociada
+    medico = get_object_or_404(Medico, rut=medico_rut)
+    cita = get_object_or_404(Cita, cita=cita)
+
+    # Obtener paciente y médico relacionados a la cita
+    paciente = cita.paciente_rut
+    medico = cita.horario.medico
+
+    # Horarios disponibles del médico
+    horarios = Horario.objects.filter(medico=medico, disponible=True).order_by('fechainicio')
+    print(horarios)
+    # Agrupar los horarios por fecha
+    horarios_por_fecha = defaultdict(list)
+    for horario in horarios:
+        horarios_por_fecha[horario.fechainicio.date()].append(horario)
+
+    if request.method == 'POST':
+        # Obtener datos del formulario
+        horario_id = request.POST.get('horario_id')
+        mail = request.POST.get('mail')
+        fono = request.POST.get('fono')
+
+        if not (horario_id and mail and fono):
+            return JsonResponse({'success': False, 'error': 'Faltan datos obligatorios para actualizar la cita.'})
+
+        try:
+            # Validar y obtener el horario
+            horario_uuid = UUID(horario_id)  # Verifica que sea un UUID válido
+            horario = get_object_or_404(Horario, horario=horario_uuid)
+        except ValueError:
+            return JsonResponse({'success': False, 'error': 'El ID de horario no es válido.'})
+
+        if not horario.disponible:
+            return JsonResponse({'success': False, 'error': 'El horario seleccionado no está disponible.'})
+
+        try:
+            # Actualizar datos del paciente
+            usuario = Usuario.objects.get(rut=paciente.rut)
+            usuario.mail = mail
+            usuario.fono = fono
+            usuario.save()
+
+            # Actualizar la cita con el nuevo horario
+            cita.horario = horario
+            cita.save()
+
+            # Marcar el horario como ocupado
+            horario.disponible = False
+            horario.save()
+
+            # Redirección exitosa
+            return JsonResponse({
+                'success': True,
+                'redirect_url': reverse('administrativo:resumen_cita', args=[cita.cita])
+            })
+
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': f'Ocurrió un error al actualizar la cita: {str(e)}'})
+
+    # Renderizar el template con los datos necesarios
+    return render(request, 'paciente/ver_modificar.html', {
+        'cita': cita,
+        'horarios_por_fecha': horarios_por_fecha,  # Horarios agrupados por fecha
+        'paciente': paciente,  # Datos del paciente
+        'medico': medico,  # Información del médico
+        'medico_rut': medico.rut,  # Rut del médico para el template
+    })
+
+def cancelar_cita(request, cita):
+
+    cita = get_object_or_404(Cita, cita=cita)
+    horario = cita.horario
+    horario.disponible = True
+    horario.save()
+    cita.delete()
+    messages.success(request, "Cita cancelada exitosamente. El horario está disponible nuevamente.")
+    
+    return redirect('administrativo:listado_citas')

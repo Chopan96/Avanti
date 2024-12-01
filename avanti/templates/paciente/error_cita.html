@@ -1,0 +1,25 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Cita{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/formulario.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container" id="">
+
+    <h1>Ocurrió un problema</h1>
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Por favor, verifica la información ingresada e intenta nuevamente.</p>
+    {% endif %}
+    <a href="{% url 'administrativo:formulario_reserva' %}">Regresar al inicio</a>
+</div>
+{% endblock %}

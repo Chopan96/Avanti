@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Buscar Citas{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/formulario.css' %}">
+{% endblock %}
+{% block content %}
+<div class="formulario">
+    <h1>Buscar Citas por RUT</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="rut" class="form-label">Ingrese RUT del Paciente:</label>
+            <input type="text" id="rut" name="rut" class="form-control" placeholder="Ingrese RUT del Paciente" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Buscar Citas</button>
+    </form>
+    
+    {% if messages %}
+        <div class="alert alert-danger">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

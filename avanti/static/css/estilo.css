@@ -130,3 +130,14 @@ flex-direction: column; /* Organizar elementos verticalmente */
 main {
 flex-grow: 1; /* Ocupa el espacio disponible entre el header y el footer */
 }
+
+.botones{
+  display: flex;
+  justify-content: center;
+  align-items: center; /* También centra verticalmente */
+  height: 100px;
+}
+#volver{
+  background-color: #e07b18;
+  margin-right: 15px;
+}

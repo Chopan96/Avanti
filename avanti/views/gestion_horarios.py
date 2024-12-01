@@ -84,6 +84,7 @@ def generar_horarios(desde, hasta, medico, sala, zona_horaria='America/Santiago'
                         sala=sala,
                         fechainicio=current_start_time,
                         fechafin=current_start_time + timedelta(minutes=30),
+                        disponibilidad=disponibilidad
                     )
                     horarios_creados.append(horario)
 

@@ -9,6 +9,7 @@
 {% block content %}
 <div class="container mt-4">
     <div class="contenedor">
+        
         <h1>Horarios de {{ medico.rut.nombre }} {{ medico.rut.apellido }}</h1>
         <div id="calendario" style="display: block;">
             <div id="calendar" data-medico-rut="{{ medico.rut.rut }}"></div>
@@ -24,6 +25,9 @@
             <button id="saveBtn">Guardar Cambios</button>
             <button id="deleteBtn">Eliminar Horario</button>
         </div>
+    </div>
+    <div class="botones">
+        <a href="{% url 'administrativo:lista_medicos' %}" class="btn btn-primary" id="volver">Volver</a>
     </div>
 </div>
 {% endblock %}

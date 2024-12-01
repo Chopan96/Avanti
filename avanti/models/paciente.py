@@ -7,3 +7,5 @@ class Paciente(models.Model):
     direccion = models.CharField(max_length=100, blank=True, null=True)
     class Meta:
         db_table = 'paciente'
+
+    

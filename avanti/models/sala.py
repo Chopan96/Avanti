@@ -7,3 +7,6 @@ class Sala(models.Model):
     sucursal = models.ForeignKey('Sucursal', on_delete=models.CASCADE, db_column='id_sucursal', related_name='citas')
     class Meta:
         db_table = 'sala'
+
+    def __str__(self):
+        return self.sala

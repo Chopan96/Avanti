@@ -34,6 +34,7 @@
                         <th>Teléfono</th>
                         <th>Disponibilidad</th>
                         <th>Horarios</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -55,6 +56,12 @@
                             <ul>
                                 <li><a href="{% url 'administrativo:generar_horarios' medico.rut.rut %}"> Crear Horario </a></li>
                                 <li><a href="{% url 'administrativo:ver_horarios' medico.rut.rut %}">Ver Horario</a></li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li><a href="{% url 'administrativo:editar_medico' medico.rut.rut %}">Editar</a></li>
+                                <li><a href="{% url 'administrativo:eliminar_medico' medico.rut.rut %}" onclick="return confirm('¿Estás seguro de que deseas eliminar este médico?');">Eliminar</a></li>
                             </ul>
                         </td>
                     </tr>

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Cita{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/formulario.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="formulario">
+
+    <h1>Cita Generada Exitosamente</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Campo</th>
+                <th>Información</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>ID de la Cita:</strong></td>
+                <td>{{ cita.cita }}</td>
+            </tr>
+            <tr>
+                <td><strong>Paciente:</strong></td>
+                <td>{{ cita.paciente_rut.rut }}</td>
+            </tr>
+            <tr>
+                <td><strong>Previsión:</strong></td>
+                <td>{{ cita.prevision }}</td>
+            </tr>
+            <tr>
+                <td><strong>Horario:</strong></td>
+                <td>{{ cita.horario.fechainicio|date:"H:i" }} - {{ cita.horario.fechafin|date:"H:i" }}</td>
+            </tr>
+            <tr>
+                <td><strong>Sala:</strong></td>
+                <td>{{ cita.horario.sala }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <a href="{% url 'administrativo:listado_citas' %}">Ver listado de citas</a>
+</div>
+{% endblock %}
