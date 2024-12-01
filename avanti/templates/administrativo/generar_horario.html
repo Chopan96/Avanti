@@ -5,7 +5,7 @@
 {% block title %}Generar Horarios{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/horario.css' %}">
+
 <link rel="stylesheet" href="{% static 'css/formulario.css' %}">
 {% endblock %}
 
@@ -13,11 +13,12 @@
 {% block content %}
 <div class="container mt-4">
     <div class="formulario">
-        <h2>Generar Horarios para el Médico {{ medico.rut }}</h2>
+        <h2>Generar Horarios para el Médico {{ medico.rut.nombre }} {{ medico.rut.apellido }}</h2>
         <form method="post" class="formulario">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Generar Horarios</button>
+            <button type="submit" class="btn btn-success">Generar Horarios</button>
+            <a href="{% url 'administrativo:lista_medicos' %}" class="btn btn-secondary">Cancelar</a>
         </form>
     </div>
 </div>

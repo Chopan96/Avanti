@@ -182,6 +182,7 @@ def listado_citas(request):
     
     return render(request, 'paciente/buscar_rut.html')
 
+
 def editar_cita(request, medico_rut, cita):
     # Recuperar el médico y la cita asociada
     medico = get_object_or_404(Medico, rut=medico_rut)
@@ -193,11 +194,14 @@ def editar_cita(request, medico_rut, cita):
 
     # Horarios disponibles del médico
     horarios = Horario.objects.filter(medico=medico, disponible=True).order_by('fechainicio')
-    print(horarios)
-    # Agrupar los horarios por fecha
-    horarios_por_fecha = defaultdict(list)
+
+    # Agrupar los horarios por fecha (solo la fecha, no la hora)
+    horarios_por_fecha = {}
     for horario in horarios:
-        horarios_por_fecha[horario.fechainicio.date()].append(horario)
+        fecha = horario.fechainicio.date()
+        if fecha not in horarios_por_fecha:
+            horarios_por_fecha[fecha] = []
+        horarios_por_fecha[fecha].append(horario)
 
     if request.method == 'POST':
         # Obtener datos del formulario
@@ -211,7 +215,7 @@ def editar_cita(request, medico_rut, cita):
         try:
             # Validar y obtener el horario
             horario_uuid = UUID(horario_id)  # Verifica que sea un UUID válido
-            horario = get_object_or_404(Horario, horario=horario_uuid)
+            horario = get_object_or_404(Horario, horario=horario_uuid)  # Usar `horario` en lugar de `id`
         except ValueError:
             return JsonResponse({'success': False, 'error': 'El ID de horario no es válido.'})
 
@@ -226,21 +230,29 @@ def editar_cita(request, medico_rut, cita):
             usuario.save()
 
             # Actualizar la cita con el nuevo horario
+            horario_anterior = cita.horario  # Guardar el horario anterior
             cita.horario = horario
             cita.save()
 
-            # Marcar el horario como ocupado
+            # Marcar el nuevo horario como ocupado
             horario.disponible = False
             horario.save()
+
+            # Dejar el horario anterior disponible
+            horario_anterior.disponible = True
+            horario_anterior.save()
 
             # Redirección exitosa
             return JsonResponse({
                 'success': True,
                 'redirect_url': reverse('administrativo:resumen_cita', args=[cita.cita])
             })
-
+        
         except Exception as e:
             return JsonResponse({'success': False, 'error': f'Ocurrió un error al actualizar la cita: {str(e)}'})
+
+    # Pasar timestamp para forzar recarga del archivo JS
+    timestamp = datetime.now().timestamp()
 
     # Renderizar el template con los datos necesarios
     return render(request, 'paciente/ver_modificar.html', {
@@ -249,7 +261,10 @@ def editar_cita(request, medico_rut, cita):
         'paciente': paciente,  # Datos del paciente
         'medico': medico,  # Información del médico
         'medico_rut': medico.rut,  # Rut del médico para el template
+        'timestamp': timestamp,  # Para recarga del archivo JS
     })
+
+
 
 def cancelar_cita(request, cita):
 

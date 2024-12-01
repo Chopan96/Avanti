@@ -3,16 +3,14 @@
 {% block title %}Horarios del Médico{% endblock %}
 
 {% block extra_css %}
-
 <link rel="stylesheet" href="{% static 'css/ver_agenda.css' %}">
 <link rel="stylesheet" href="{% static 'css/modal.css' %}">
-
 {% endblock %}
 
 {% block content %}
 <div>
     <div class="formulario">
-        <h1>Horarios del Médico: {{ medico.rut.nombre }}</h1>
+        <h1>Horarios del Médico: {{ medico.rut.nombre }} {{ medico.rut.apellido }}</h1>
         <p><strong>Especialidad:</strong> {{ medico.especialidad }}</p>
 
         <div id="contactModal" style="display:none;" class="modal-overlay">
@@ -20,6 +18,7 @@
                 <h3>Confirma tus datos de contacto</h3>
                 <p id="modalHora"></p>
                 <form id="contactForm">
+                    {% csrf_token %}
                     <label for="mail">Correo electrónico:</label>
                     <input type="email" id="mail" name="mail" value="{{ paciente_mail }}" required>
                     
@@ -52,27 +51,28 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/locales/es.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/locales/es.global.min.js"></script>
 
 <script>
-    
     const medicoRut = "{{ medico_rut }}";  // Aquí obtienes el rut del médico
-
-    // Puedes usarlo para filtrar los horarios o hacer alguna solicitud Ajax si es necesario
     const horarios = [
-    {
-        title: "Sala 1",
-        start: "2024-12-05T10:00",
-        extendedProps: {
-            fecha: "2024-12-05",
-            hora: "10:00",
-            sala: "Sala 1",
-            direccion: "Calle Falsa 123",
-            horario: "UUID-HORARIO",
-            medicoRut: "194307888"
-        }
-    }
+        {% for fecha, horarios in horarios_por_fecha.items %}
+            {% for horario in horarios %}
+                {
+                    title: "{{ horario.sala.nombre }}",
+                    start: "{{ horario.fechainicio|date:'Y-m-d H:i' }}",
+                    extendedProps: {
+                        fecha: "{{ horario.fechainicio|date:'Y-m-d' }}",
+                        hora: "{{ horario.fechainicio|date:'H:i' }}",
+                        sala: "{{ horario.sala.nombre }}",
+                        direccion: "{{ horario.sala.direccion }}",
+                        horario: "{{ horario.horario }}",
+                        medicoRut: "{{ medico.rut }}"  // Incluye el rut del médico aquí
+                    }
+                },
+            {% endfor %}
+        {% endfor %}
     ];
 
     const fechasConHorarios = [...new Set(horarios.map(h => h.extendedProps.fecha))];
@@ -90,16 +90,16 @@
     
         const calendar = new FullCalendar.Calendar(calendarEl, {
             locale: 'es',
-            initialView: 'dayGridMonth', // Cambia si necesitas otra vista inicial
+            initialView: 'dayGridMonth',
             headerToolbar: {
                 left: 'prev,next',
                 center: 'title',
                 right: ''
             },
-            events: [], // No mostramos eventos en el calendario
+            events: [],
             dayCellDidMount: function (info) {
                 if (fechasConHorarios.includes(info.date.toISOString().split('T')[0])) {
-                    info.el.classList.add('fc-highlight-day'); // Resaltar días
+                    info.el.classList.add('fc-highlight-day');
                 }
             },
             dateClick: function (info) {
@@ -118,10 +118,9 @@
                         </div>
                     `).join('')
                     : `<p>No hay horarios disponibles para el día seleccionado.`;
-                }
+            }
         });
-    
-        // Evento para abrir el modal cuando se hace clic en "Agendar"
+
         document.addEventListener('click', function (e) {
             if (e.target && e.target.classList.contains('agendar-btn')) {
                 const hora = e.target.getAttribute('data-hora');
@@ -133,53 +132,60 @@
                 contactModal.style.display = 'flex';
             }
         });
-    
-        // Evento para cerrar el modal
+
         modalCancel.addEventListener('click', function () {
             contactModal.style.display = 'none';
         });
-    
-        // Evento para enviar el formulario del modal
+
         modalSubmit.addEventListener('click', function () {
-            const mail = mailInput.value; // Solo relevante si mantienes este dato en el flujo
-            const fono = fonoInput.value; // Igual que lo anterior
+            const mail = mailInput.value;
+            const fono = fonoInput.value;
             const horarioId = horarioIdInput.value;
 
             if (horarioId) {
                 const data = new FormData();
                 data.append('horario_id', horarioId);
+                data.append('mail', mail);
+                data.append('fono', fono);
 
-                fetch('{% url 'administrativo:editar_cita' medico.rut cita.cita %}', {  // Cambiar URL al endpoint de modificación
+                // Logs de los datos que se enviarán
+                console.log('Datos a enviar:', {
+                    horario_id: horarioId,
+                    mail: mail,
+                    fono: fono
+                });
+
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                // Log de la URL
+                console.log('URL generada para la solicitud fetch:', '{% url "administrativo:editar_cita" medico.rut cita.cita %}');
+
+                fetch('{% url "administrativo:editar_cita" medico.rut cita.cita %}', {
                     method: 'POST',
                     body: data,
                     headers: {
-                        'X-CSRFToken': '{{ csrf_token }}',
+                        'X-CSRFToken': csrfToken,  // Añadir el token CSRF
                     },
                 })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            window.location.href = data.redirect_url; // Redirige a la URL de éxito proporcionada
-                        } else {
-                            alert(data.error); // Manejo de errores
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error al modificar cita:', error);
-                        alert('Ocurrió un error inesperado al intentar modificar la cita.');
-                    });
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Respuesta del servidor:', data);
+                    if (data.success) {
+                        window.location.href = data.redirect_url;  // Redirige a la URL de éxito proporcionada
+                    } else {
+                        alert(data.error);  // Manejo de errores
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al modificar cita:', error);
+                    alert('Ocurrió un error inesperado al intentar modificar la cita.');
+                });
             } else {
                 alert('Debes seleccionar un horario.');
             }
         });
-    
+
         calendar.render();
     });
-    
-    
 </script>
 
-
 {% endblock %}
-
-

@@ -12,7 +12,7 @@
 {% block content %}
 <div>
     <div class="formulario">
-        <h1>Horarios del Médico: {{ medico.rut.nombre }}</h1>
+        <h1>Horarios del Médico: {{ medico.rut.nombre }} {{ medico.rut.apellido }}</h1>
         <p><strong>Especialidad:</strong> {{ medico.especialidad }}</p>
 
         <div id="contactModal" style="display:none;" class="modal-overlay">
