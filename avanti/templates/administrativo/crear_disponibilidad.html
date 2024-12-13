@@ -7,12 +7,12 @@
 {% block content %}
 <div class="container mt-4">
     <div class="formulario">
-        <h2>Crear Disponibilidad para Médico: {{ medico.rut.nombre }} {{ medico.rut.apellido }}</h2>
+        <h2>Crear Disponibilidad para Médico: {{ medico.usuario.nombre }} {{ medico.usuario.apellido }}</h2>
         <form method="POST">
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit" class="btn btn-success">Guardar Disponibilidad</button>
-            <a href="{% url 'administrativo:ver_disponibilidades' medico.rut %}" class="btn btn-secondary">Cancelar</a>
+            <a href="{% url 'administrativo:ver_disponibilidades' medico.usuario.rut %}" class="btn btn-secondary">Cancelar</a>
         </form>
     </div>
 </div>

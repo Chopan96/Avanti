@@ -11,7 +11,7 @@
     
     
     {% block content %}
-    <div class="container mt-4">
+    <div class="container mt-4" id="mensaje">
         {% if messages %}
             <div class="messages">
                 {% for message in messages %}
@@ -40,28 +40,28 @@
                 <tbody>
                     {% for medico in medicos %}
                     <tr>
-                        <td>{{ medico.rut.rut }}</td>
-                        <td>{{ medico.rut.nombre }}</td>
-                        <td>{{ medico.rut.apellido }}</td>
+                        <td>{{ medico.usuario.rut }}</td>
+                        <td>{{ medico.usuario.first_name }}</td>
+                        <td>{{ medico.usuario.last_name }}</td>
                         <td>{{ medico.especialidad }}</td>
-                        <td>{{ medico.rut.mail }}</td>
-                        <td>{{ medico.rut.fono }}</td>
+                        <td>{{ medico.usuario.email }}</td>
+                        <td>{{ medico.usuario.fono }}</td>
                         <td>
                             <ul>
-                                <li><a href="{% url 'administrativo:crear_disponibilidad' medico.rut.rut %}">Crear Disponibilidad</a></li>
-                                <li><a href="{% url 'administrativo:ver_disponibilidades' medico.rut.rut %}">Ver Disponibilidades</a></li>
+                                <li><a href="{% url 'administrativo:crear_disponibilidad' medico.usuario.rut %}">Crear Disponibilidad</a></li>
+                                <li><a href="{% url 'administrativo:ver_disponibilidades' medico.usuario.rut %}">Ver Disponibilidades</a></li>
                             </ul>
                         </td>
                         <td>
                             <ul>
-                                <li><a href="{% url 'administrativo:generar_horarios' medico.rut.rut %}"> Crear Horario </a></li>
-                                <li><a href="{% url 'administrativo:ver_horarios' medico.rut.rut %}">Ver Horario</a></li>
+                                <li><a href="{% url 'administrativo:generar_horarios' medico.usuario.rut %}"> Crear Horario </a></li>
+                                <li><a href="{% url 'administrativo:ver_horarios' medico.usuario.rut %}">Ver Horario</a></li>
                             </ul>
                         </td>
                         <td>
                             <ul>
-                                <li><a href="{% url 'administrativo:editar_medico' medico.rut.rut %}">Editar</a></li>
-                                <li><a href="{% url 'administrativo:eliminar_medico' medico.rut.rut %}" onclick="return confirm('¿Estás seguro de que deseas eliminar este médico?');">Eliminar</a></li>
+                                <li><a href="{% url 'administrativo:editar_medico' medico.usuario.rut %}">Editar</a></li>
+                                <li><a href="{% url 'administrativo:eliminar_medico' medico.usuario.rut %}" onclick="return confirm('¿Estás seguro de que deseas eliminar este médico?');">Eliminar</a></li>
                             </ul>
                         </td>
                     </tr>
@@ -74,6 +74,9 @@
             </table>
             <a href="{% url 'administrativo:registrar_medico' %}">Registrar un nuevo médico</a>
             </form>
+        </div>
+        <div class="botones">
+            <a href="{% url 'administrativo:administrativo_main' %}" class="btn btn-primary" id="volver">Volver</a>
         </div>
     </div>
     <!-- Cargar el archivo JS -->

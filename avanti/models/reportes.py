@@ -8,7 +8,7 @@ class Reportes(models.Model):
     fechafin = models.DateField(blank=True, null=True)
     ingresos = models.BigIntegerField(blank=True, null=True)
     total = models.BigIntegerField(blank=True, null=True)
-    administrativo_rut = models.ForeignKey('Administrativo', models.DO_NOTHING, db_column='administrativo_rut')
+    administrativo = models.ForeignKey('Administrativo', models.DO_NOTHING)
 
     class Meta:
-        unique_together = (('reporte', 'administrativo_rut'),)
+        unique_together = (('reporte', 'administrativo'),)

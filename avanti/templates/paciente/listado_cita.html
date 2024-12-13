@@ -29,7 +29,7 @@
                         <td>{{ cita.prevision }}</td>
                         <td>{{ cita.horario.sala.sucursal.nombre }}</td>
                         <td>
-                            <a href="{% url 'administrativo:editar_cita' medico_rut=cita.horario.medico.rut.rut cita=cita.cita %}">Editar</a> | 
+                            <a href="{% url 'administrativo:editar_cita' medico_rut=cita.horario.medico.usuario.rut cita=cita.cita %}">Editar</a> | 
                             <a href="{% url 'administrativo:cancelar_cita' cita=cita.cita %}" onclick="return confirm('¿Estás seguro de que quieres cancelar esta cita?');">Cancelar</a>
                         </td>
                     </tr>

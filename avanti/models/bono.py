@@ -6,12 +6,12 @@ class Bono(models.Model):
     feccreacion = models.DateField(blank=True, null=True)
     fecvigencia = models.DateField(blank=True, null=True)
     cita = models.ForeignKey('Cita', on_delete=models.CASCADE, db_column='id_cita')
-    paciente_rut = models.ForeignKey('Paciente', on_delete=models.CASCADE, db_column='paciente_rut', related_name='bonos')
+    paciente = models.ForeignKey('Paciente', on_delete=models.CASCADE, related_name='bonos')
     prevision = models.ForeignKey('Prevision', on_delete=models.CASCADE, db_column='id_prevision', related_name='bonos')
     reporte = models.ForeignKey('Reportes', on_delete=models.CASCADE, db_column='id_reporte')
-    administrativo_rut = models.ForeignKey('Administrativo', on_delete=models.CASCADE, db_column='administrativo_rut')
+    administrativo = models.ForeignKey('Administrativo', on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'bono'
-        unique_together = (('bono', 'reporte', 'administrativo_rut'),)
+        unique_together = (('bono', 'reporte', 'administrativo'),)
 

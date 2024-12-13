@@ -12,7 +12,7 @@ from django.utils import timezone
 from django.contrib import messages
 
 def generar_horarios_view(request, medico_rut):
-    medico = get_object_or_404(Medico, rut=medico_rut)
+    medico = get_object_or_404(Medico, usuario__rut=medico_rut)
 
     if request.method == "POST":
         form = GenerarHorarioForm(request.POST)
@@ -25,7 +25,7 @@ def generar_horarios_view(request, medico_rut):
             horarios = generar_horarios(desde, hasta, medico, sala)
 
             # Agregar un mensaje de éxito
-            messages.success(request, f"Se generaron {len(horarios)} horarios para el médico {medico.rut}.")
+            messages.success(request, f"Se generaron {len(horarios)} horarios para el médico {medico.usuario.rut}.")
             return redirect('administrativo:lista_medicos')
         else:
             # Agregar un mensaje de error con los errores del formulario
@@ -97,7 +97,7 @@ def generar_horarios(desde, hasta, medico, sala, zona_horaria='America/Santiago'
 
 
 def ver_horarios(request, medico_rut):
-    medico = get_object_or_404(Medico, rut__rut=medico_rut)
+    medico = get_object_or_404(Medico, usuario__rut=medico_rut)
     return render(request, 'administrativo/ver_horarios.html', {'medico': medico}) 
 
 
@@ -113,7 +113,7 @@ class HorarioFullCalendarView(View):
 
         # Filtrar horarios por médico y rango de fechas
         horarios = Horario.objects.filter(
-            medico__rut=medico_rut,
+            medico__usuario__rut=medico_rut,
             fechainicio__gte=start,
             fechafin__lte=end
         )

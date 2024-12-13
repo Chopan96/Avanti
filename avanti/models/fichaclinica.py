@@ -2,9 +2,7 @@ from django.db import models
 
 class FichaClinica(models.Model):
     id_ficha = models.AutoField(primary_key=True)
-    paciente = models.OneToOneField(
-        'Paciente', on_delete=models.CASCADE, related_name='ficha_clinica'
-    )
+    paciente = models.OneToOneField('Paciente', on_delete=models.CASCADE)
     motivo = models.TextField(blank=True, null=True)
     observaciones = models.TextField(blank=True, null=True)
 

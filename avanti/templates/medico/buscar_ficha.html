@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Inicio Paciente{% endblock %}
+{% block title %}Gestionar Ficha Clínica{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/formulario.css' %}">
@@ -8,15 +8,12 @@
 
 {% block content %}
 <div class="formulario">
-
     <h1>Buscar o Crear Ficha Clínica</h1>
-    <form method="post" action="{% url 'administrativo:buscar_ficha' %}">
-        {% csrf_token %}
+    <form method="get" action="{% url 'gestionar_ficha' '' %}">
+        <!-- El campo `rut` será parte de la URL -->
         <label for="rut">Ingrese el RUT del paciente:</label>
-        <input type="text" id="rut" name="rut" placeholder="Ej: 12345678-9" required>
-        <button type="submit" name="action" value="buscar">Buscar Ficha Clínica</button>
-        <button type="submit" name="action" value="crear">Crear Ficha Clínica</button>
+        <input type="text" id="rut" name="paciente_rut" placeholder="Ej: 12345678-9" required>
+        <button type="submit">Buscar o Crear</button>
     </form>
 </div>
-
 {% endblock %}

@@ -1,56 +1,30 @@
 from django import forms
-from ..models import Disponibilidad
+from ..models import Disponibilidad, Medico
 from django.core.exceptions import ValidationError
 from datetime import time
 
 class DisponibilidadForm(forms.ModelForm):
+    medico_rut = forms.CharField(max_length=12, label="RUT del Médico", widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+
     class Meta:
         model = Disponibilidad
-        fields = ['medico', 'dia', 'horainicio', 'horafin']
+        fields = ['medico_rut', 'dia', 'horainicio', 'horafin']
 
     def __init__(self, *args, **kwargs):
-        medico_rut = kwargs.pop('medico_rut', None)  # Recibe el rut del médico como argumento
+        medico_rut = kwargs.pop('medico_rut', None)
         super().__init__(*args, **kwargs)
         if medico_rut:
-            # Inicializar el campo 'medico' con el rut recibido
-            self.fields['medico'].initial = medico_rut
-            self.fields['medico'].widget = forms.TextInput(attrs={'readonly': 'readonly'})  # Solo lectura
+            self.fields['medico_rut'].initial = medico_rut
 
-    def clean(self):
-        cleaned_data = super().clean()
+    def clean_medico_rut(self):
+        rut = self.cleaned_data.get('medico_rut')
+        try:
+            medico = Medico.objects.get(usuario__rut=rut)
+            return medico
+        except Medico.DoesNotExist:
+            raise ValidationError(f"No se encontró un médico con el RUT: {rut}")
 
-        # Validar campos vacíos
-        for field_name in self.fields:
-            value = cleaned_data.get(field_name)
-            if value is None or (isinstance(value, str) and not value.strip()):
-                self.add_error(field_name, f"El campo {field_name} no puede estar vacío.")
-
-        medico = cleaned_data.get('medico')
-        dia = cleaned_data.get('dia')
-        horainicio = cleaned_data.get('horainicio')
-        horafin = cleaned_data.get('horafin')
-
-        # Validar superposición de horarios excluyendo la instancia actual
-        if medico and dia and horainicio and horafin:
-            disponibilidades = Disponibilidad.objects.filter(medico=medico, dia=dia).exclude(id=self.instance.id)
-            for disponibilidad in disponibilidades:
-                if horainicio < disponibilidad.horafin and horafin > disponibilidad.horainicio:
-                    raise ValidationError(f"Ya existe una disponibilidad del médico {medico} en este horario.")
-
-        # Validar que horafin es posterior a horainicio
-        if horainicio and horafin and horainicio >= horafin:
-            self.add_error('horafin', "La hora de fin debe ser posterior a la hora de inicio.")
-
-        return cleaned_data
-
-    def clean_horainicio(self):
-        horainicio = self.cleaned_data.get('horainicio')
-        if horainicio and (horainicio < time(8, 0) or horainicio > time(18, 0)):
-            raise ValidationError("La hora de inicio debe estar entre las 08:00 y las 18:00.")
-        return horainicio
-
-    def clean_horafin(self):
-        horafin = self.cleaned_data.get('horafin')
-        if horafin and (horafin < time(8, 0) or horafin > time(18, 0)):
-            raise ValidationError("La hora de fin debe estar entre las 08:00 y las 18:00.")
-        return horafin
+    def save(self, commit=True):
+        medico = self.cleaned_data.get('medico_rut')  # Esto ya es una instancia de Medico
+        self.instance.medico = medico  # Asigna el médico al campo de la instancia
+        return super().save(commit=commit)

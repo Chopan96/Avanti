@@ -18,7 +18,13 @@ margin: 0;
 background-color: rgba(0, 0, 0, 0.103);
 }
 
-
+.titulo{
+  background-color: bisque;
+  padding: 15px;
+  border-radius: 8px;
+  max-width: max-content;
+  
+}
 
 
 a{

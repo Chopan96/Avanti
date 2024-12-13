@@ -10,7 +10,7 @@
 {% block content %}
 <div>
     <div class="formulario">
-        <h1>Horarios del Médico: {{ medico.rut.nombre }} {{ medico.rut.apellido }}</h1>
+        <h1>Horarios del Médico: {{ medico.usuario.first_name }} {{ medico.usuario.last_name }}</h1>
         <p><strong>Especialidad:</strong> {{ medico.especialidad }}</p>
 
         <div id="contactModal" style="display:none;" class="modal-overlay">
@@ -68,7 +68,7 @@
                         sala: "{{ horario.sala.nombre }}",
                         direccion: "{{ horario.sala.direccion }}",
                         horario: "{{ horario.horario }}",
-                        medicoRut: "{{ medico.rut }}"  // Incluye el rut del médico aquí
+                        medicoRut: "{{ medico.usuario.rut }}"  // Incluye el rut del médico aquí
                     }
                 },
             {% endfor %}
@@ -157,9 +157,9 @@
 
                 const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
                 // Log de la URL
-                console.log('URL generada para la solicitud fetch:', '{% url "administrativo:editar_cita" medico.rut cita.cita %}');
+                console.log('URL generada para la solicitud fetch:', '{% url "administrativo:editar_cita" medico.usuario.rut cita.cita %}');
 
-                fetch('{% url "administrativo:editar_cita" medico.rut cita.cita %}', {
+                fetch('{% url "administrativo:editar_cita" medico.usuario.rut cita.cita %}', {
                     method: 'POST',
                     body: data,
                     headers: {

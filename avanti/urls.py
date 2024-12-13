@@ -1,16 +1,18 @@
-
-from django.urls import path
+from django.contrib.auth.views import LogoutView
+from django.urls import path,reverse_lazy
 from . import views
 
 app_name = 'administrativo'
 
 urlpatterns = [
-    path('', views.home, name='home'),
-    #Main Personal
-    path('personal/', views.personal, name='personal'),
-    #Main Paciente
-    path('paciente/', views.paciente, name='paciente'),
+    #Login
+    path('accounts/login/', views.CustomLoginView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(next_page=reverse_lazy('default_main')), name='logout'),
 
+    path('paciente/', views.paciente, name='paciente_main'),
+    path('medico/', views.medico, name='medico_main'),
+    path('administrativo/', views.personal, name='administrativo_main'),
+    path('', views.home, name='default_main'),
 
     #Medicos desde vista administrativo
     path('registrar-medico/', views.registrar_medico, name='registrar_medico'),
@@ -30,9 +32,8 @@ urlpatterns = [
     path('generar_horarios/<str:medico_rut>/', views.generar_horarios_view, name='generar_horarios'),
     path('ver-horarios/<str:medico_rut>/', views.ver_horarios, name='ver_horarios'),
     #Ficha Clinica
-    path('buscar_ficha/', views.buscar_ficha_view, name='buscar_ficha'),
-    path('ficha_clinica/<str:paciente_rut>/', views.ficha_clinica_view, name='ficha_clinica'),
-    path('crear_ficha/<str:paciente_rut>/', views.crear_ficha_view, name='crear_ficha'),
+    
+    path('crear_ficha/', views.crear_ficha_view, name='crear_ficha'),
 
     #Citas
     

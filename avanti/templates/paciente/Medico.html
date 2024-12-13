@@ -20,10 +20,10 @@
         <tbody>
             {% for medico in medicos %}
                 <tr>
-                    <td>{{ medico.rut }}</td>
+                    <td>{{ medico.usuario.rut }}</td>
                     <td>{{ medico.especialidad }}</td>
                     <td>
-                        <a href="{% url 'administrativo:ver_citas' medico.rut.rut %}" class="btn btn-primary">Ver Agenda</a>
+                        <a href="{% url 'administrativo:ver_citas' medico.usuario.rut %}" class="btn btn-primary">Ver Agenda</a>
                     </td>                
                 </tr>
             {% endfor %}

@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Reserva de Citas{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/paciente.css' %}">
+{% endblock %}
+
+{% block content %}
+<h2>Menú Principal - Médico</h2>
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+
+        <div class="row row-cols-1 row-cols-md-3 g-4 mt-3">
+            <!-- Ver Horario de Atención -->
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title">Ver Horario de Atención</h3>
+                        <p class="card-text">Aquí puede ver su horario de atención de citas.</p>
+                    </div>
+                    <div class="card-footer">
+                        <a class="btn btn-primary w-100" >Ver Horario</a>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Ver Pacientes -->
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title">Ver Pacientes</h3>
+                        <p class="card-text">Acceda a la lista de todos sus pacientes.</p>
+                    </div>
+                    <div class="card-footer">
+                        <a class="btn btn-primary w-100" >Ver Pacientes</a>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Buscar Paciente -->
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title">Buscar Paciente</h3>
+                        <p class="card-text">Busque un paciente para acceder a su historial clínico o agregar información de la consulta actual.</p>
+                        <form>
+                            <div class="form-group fondo-buscar">
+                                <label for="searchPaciente"><b>Nombre o ID del Paciente:</b></label>
+                                <input type="text" class="form-control" id="searchPaciente" placeholder="Ingrese nombre o ID">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer">
+                        <a type="submit" class="btn btn-primary w-100 mt-2">Buscar Paciente</a>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Agregar Ficha de Nuevo Paciente -->
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title">Agregar Ficha de Nuevo Paciente</h3>
+                        <p class="card-text">Registre una ficha clínica para un nuevo paciente.</p>
+                    </div>
+                    <div class="card-footer">
+                        <a class="btn btn-success w-100">Agregar Ficha Clínica</a>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Ver Historial Completo -->
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title">Ver Historial Completo de Atenciones Anteriores</h3>
+                        <p class="card-text">Revise todas las atenciones anteriores de un paciente.</p>
+                    </div>
+                    <div class="card-footer">
+                        <a class="btn btn-info w-100" >Ver Historial Completo</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if messages %}
+    <div class="alert alert-danger">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

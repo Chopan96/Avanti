@@ -6,6 +6,9 @@
     border-radius: 8px;
 }
 
+#mensajes{
+    background-color: bisque;
+}
 /* Header */
 h1 {
     font-size: 2rem;

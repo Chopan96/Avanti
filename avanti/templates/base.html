@@ -29,8 +29,22 @@
 
     <nav class="navbar navbar-expand-lg">
         <a class="navbar-brand" href="#"><img src="{% static 'imagenes/circular_logo.png' %}" id="logo">Centro Médico Avanti</a>
-        <!-- Menú de navegación aquí -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            {% if user.is_authenticated %}
+            <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-link">Cerrar sesión</button>
+            </form>
+            {% else %}
+            <a href="{% url 'login' %}" class="btn btn-link">Iniciar sesión</a>
+            {% endif %}
+
+        </div>
     </nav>
+    
 
     <main class="container mt-5">
         {% block content %}

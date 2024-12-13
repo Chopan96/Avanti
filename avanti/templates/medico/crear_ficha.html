@@ -1,58 +1,96 @@
 {% extends 'base.html' %}
-{% block extra_css %}
 {% load static %}
+{% block extra_css %}
+
 <link rel="stylesheet" href="{% static 'css/historial.css' %}">
 {% endblock %}
+{% block title %}Gestionar Ficha Clínica{% endblock %}
 
 {% block content %}
 <div class="formulario">
-
-    <h1>Crear Ficha Clínica</h1>
+    {% if messages %}
+    <div>
+        {% for message in messages %}
+            <div class="alert">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <h1>{% if ficha_clinica.id %}Editar Ficha Clínica{% else %}Crear Ficha Clínica{% endif %}</h1>
     <form method="post">
         {% csrf_token %}
         
+        <!-- Campo RUT -->
+        <div>
+            <label for="rut">RUT del Paciente</label>
+            <input type="text" name="rut" id="rut" placeholder="Ingrese el RUT del paciente..." required value="{{ request.POST.rut }}">
+        </div>
+
         <!-- Formulario Ficha Clínica -->
         <div>
             <label for="{{ ficha_form.motivo.id_for_label }}">{{ ficha_form.motivo.label }}</label>
             {{ ficha_form.motivo }}
+            {% if ficha_form.motivo.errors %}
+                <div class="error">{{ ficha_form.motivo.errors }}</div>
+            {% endif %}
         </div>
         <div>
             <label for="{{ ficha_form.observaciones.id_for_label }}">{{ ficha_form.observaciones.label }}</label>
             {{ ficha_form.observaciones }}
+            {% if ficha_form.observaciones.errors %}
+                <div class="error">{{ ficha_form.observaciones.errors }}</div>
+            {% endif %}
         </div>
-    
+
         <!-- Formulario Historial -->
         <div>
             <label for="{{ historial_form.edad.id_for_label }}">{{ historial_form.edad.label }}</label>
             {{ historial_form.edad }}
+            {% if historial_form.edad.errors %}
+                <div class="error">{{ historial_form.edad.errors }}</div>
+            {% endif %}
         </div>
-    
+
         <!-- Formulario Alergias -->
         <div>
             <label for="{{ alergias_form.descripcion.id_for_label }}">{{ alergias_form.descripcion.label }}</label>
             {{ alergias_form.descripcion }}
+            {% if alergias_form.descripcion.errors %}
+                <div class="error">{{ alergias_form.descripcion.errors }}</div>
+            {% endif %}
         </div>
-    
+
         <!-- Formulario Diagnósticos -->
         <div>
             <label for="{{ diagnosticos_form.descripcion.id_for_label }}">{{ diagnosticos_form.descripcion.label }}</label>
             {{ diagnosticos_form.descripcion }}
+            {% if diagnosticos_form.descripcion.errors %}
+                <div class="error">{{ diagnosticos_form.descripcion.errors }}</div>
+            {% endif %}
         </div>
-    
+
         <!-- Formulario Enfermedades Base -->
         <div>
             <label for="{{ enfermedades_form.descripcion.id_for_label }}">{{ enfermedades_form.descripcion.label }}</label>
             {{ enfermedades_form.descripcion }}
+            {% if enfermedades_form.descripcion.errors %}
+                <div class="error">{{ enfermedades_form.descripcion.errors }}</div>
+            {% endif %}
         </div>
-    
+
         <!-- Formulario Medicamentos -->
         <div>
             <label for="{{ medicamentos_form.nombre.id_for_label }}">{{ medicamentos_form.nombre.label }}</label>
             {{ medicamentos_form.nombre }}
+            {% if medicamentos_form.nombre.errors %}
+                <div class="error">{{ medicamentos_form.nombre.errors }}</div>
+            {% endif %}
         </div>
-    
-        <!-- Botón de Enviar -->
-        <button type="submit">Guardar</button>
+
+        <!-- Botones de Enviar y Cancelar -->
+        <div class="form-buttons">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a href="{% url 'administrativo:medico_main' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
     </form>
 </div>
 

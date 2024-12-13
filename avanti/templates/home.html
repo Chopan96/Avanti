@@ -12,7 +12,7 @@
                 <h5 class="card-title">Acceso Médico</h5>
                 <p class="card-text">Accede a tu panel de control como médico.</p>
                 <div class="card-footer d-flex justify-content-end">
-                    <a href="Medico/login.html" class="btn btn-primary">Acceder</a>
+                    <a href={% url 'administrativo:login' %} class="btn btn-primary">Acceder</a>
                 </div>
             </div>
         </div>
@@ -24,7 +24,7 @@
                 <h5 class="card-title">Acceso Paciente</h5>
                 <p class="card-text">Consulta tus citas y historial médico.</p>
                 <div class="card-footer d-flex justify-content-end">
-                    <a href="Paciente/Main.html" class="btn btn-primary">Acceder</a>
+                    <a href={% url 'administrativo:formulario_reserva' %} class="btn btn-primary">Acceder</a>
                 </div>
             </div>
         </div>
@@ -36,7 +36,7 @@
                 <h5 class="card-title">Acceso Administrativo</h5>
                 <p class="card.text">Gestiona los registros y citas.</p>
                 <div class="card-footer d-flex justify-content-end">
-                    <a href="Personal Administrativo/login.html" class="btn btn-primary">Acceder</a>
+                    <a href={% url 'administrativo:login' %} class="btn btn-primary">Acceder</a>
                 </div>
             </div>
         </div>

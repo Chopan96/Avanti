@@ -26,8 +26,10 @@ SECRET_KEY = 'django-insecure-1lg9t_ev@(ns3z#deo37e^gng8ko8yttc-0%v&mv8r8f3@fjgj
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
-
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/accounts/login/'
+LOGOUT_REDIRECT_URL = "/"
+AUTH_USER_MODEL = 'avanti.Usuario'
 # Application definition
 
 INSTALLED_APPS = [
@@ -105,10 +107,11 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
 TIME_ZONE = 'America/Santiago'
 

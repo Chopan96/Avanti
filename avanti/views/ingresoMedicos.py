@@ -13,7 +13,7 @@ def registrar_medico(request):
             usuario.save()
 
             medico = medico_form.save(commit=False)
-            medico.rut = usuario  # Relacionar el usuario con el médico
+            medico.usuario = usuario  # Relacionar el usuario con el médico
             medico.save()
 
             return redirect('administrativo:lista_medicos')  # Cambia a la URL deseada
@@ -29,12 +29,12 @@ def registrar_medico(request):
 
 
 def lista_medicos(request):
-    medicos = Medico.objects.select_related('rut').all()  # Incluye datos del usuario relacionado
+    medicos = Medico.objects.select_related('usuario').all()  # Incluye datos del usuario relacionado
     return render(request, 'administrativo/lista_medicos.html', {'medicos': medicos})
 
 def editar_medico(request, rut):
     usuario = get_object_or_404(Usuario, rut=rut)
-    medico = get_object_or_404(Medico, rut=usuario)
+    medico = get_object_or_404(Medico, usuario=usuario)
 
     if request.method == 'POST':
         usuario_form = UsuarioForm(request.POST, instance=usuario)
@@ -54,7 +54,7 @@ def editar_medico(request, rut):
 
 def eliminar_medico(request, rut):
     usuario = get_object_or_404(Usuario, rut=rut)
-    medico = get_object_or_404(Medico, rut=usuario)
+    medico = get_object_or_404(Medico, usuario=usuario)
 
     # Primero elimina al médico, luego al usuario asociado
     medico.delete()

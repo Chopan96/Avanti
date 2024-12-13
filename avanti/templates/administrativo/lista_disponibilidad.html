@@ -25,7 +25,7 @@
             <tbody>
                 {% for disponibilidad in disponibilidades %}
                 <tr>
-                    <td>{{ disponibilidad.medico.rut }}</td>  <td>{{ disponibilidad.get_dia_display }}</td>
+                    <td>{{ disponibilidad.medico.usuario.rut }}</td>  <td>{{ disponibilidad.get_dia_display }}</td>
                     <td>{{ disponibilidad.horainicio|date:"H:i" }}</td>
                     <td>{{ disponibilidad.horafin|date:"H:i" }}</td>
                 </tr>

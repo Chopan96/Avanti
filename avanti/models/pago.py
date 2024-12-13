@@ -14,11 +14,9 @@ class Pago(models.Model):
     reporte = models.ForeignKey(
         'Reportes', models.CASCADE, db_column='id_reporte', related_name='pago_id_reporte_set'
     )
-    administrativo_rut = models.ForeignKey(
-        'Administrativo', models.CASCADE, db_column='administrativo_rut', related_name='pago_administrativo_rut_set'
-    )
+    administrativo = models.ForeignKey('Administrativo', models.CASCADE)
 
     class Meta:
         db_table = 'pago'
-        unique_together = (('pago', 'bono', 'reporte', 'administrativo_rut', 'metodo'),)
+        unique_together = (('pago', 'bono', 'reporte', 'administrativo', 'metodo'),)
 

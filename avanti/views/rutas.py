@@ -9,3 +9,6 @@ def personal(request):
 def paciente(request):
     return render(request, 'paciente/main.html')
 
+def medico(request):
+    return render(request, 'medico/main.html')
+

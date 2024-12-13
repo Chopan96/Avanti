@@ -1,11 +1,8 @@
 from django.db import models
 
 class Paciente(models.Model):
-    rut = models.OneToOneField(
-        'Usuario', models.CASCADE, db_column='rut', primary_key=True
-    )
+    usuario = models.OneToOneField('Usuario', on_delete=models.CASCADE, primary_key=True, related_name='perfil_paciente')
     direccion = models.CharField(max_length=100, blank=True, null=True)
+
     class Meta:
         db_table = 'paciente'
-
-    
