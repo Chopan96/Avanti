@@ -254,7 +254,7 @@ def editar_cita(request, medico_rut, cita):
             # Redirección exitosa
             return JsonResponse({
                 'success': True,
-                'redirect_url': reverse('administrativo:resumen_cita', args=[cita.id])
+                'redirect_url': reverse('administrativo:resumen_cita', args=[cita.cita])
             })
 
         except Exception as e:

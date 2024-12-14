@@ -1,5 +1,5 @@
 from .disponibilidad_form import DisponibilidadForm
 from .UsuariosForm import MedicoForm, UsuarioForm
 from .horarios_form import GenerarHorarioForm
-from .historial_form import AlergiasForm,DiagnosticosForm,EnfermedadesBaseForm,FichaClinicaForm,HistorialForm,MedicamentosForm
+from .historial_form import AlergiasForm,DiagnosticosForm,EnfermedadesBaseForm,FichaClinicaForm,MedicamentosForm,ConsultaForm
 from .login_form import CustomLoginForm

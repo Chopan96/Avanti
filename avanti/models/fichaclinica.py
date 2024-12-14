@@ -1,10 +1,9 @@
 from django.db import models
 
 class FichaClinica(models.Model):
-    id_ficha = models.AutoField(primary_key=True)
     paciente = models.OneToOneField('Paciente', on_delete=models.CASCADE)
-    motivo = models.TextField(blank=True, null=True)
-    observaciones = models.TextField(blank=True, null=True)
+    edad = models.IntegerField()  # Edad directamente en la ficha clínica
+    fecha_creacion = models.DateField(auto_now_add=True)
 
-    class Meta:
-        db_table = 'ficha_clinica'
+    def __str__(self):
+        return f"Ficha Clínica de {self.paciente.usuario.first_name}"

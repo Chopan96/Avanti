@@ -1,22 +1,9 @@
 from django import forms
-from ..models import FichaClinica, Historial, Alergias, Diagnosticos, EnfermedadesBase, Medicamentos
+from ..models import FichaClinica, Consulta, Alergia, Diagnostico, EnfermedadesBase, Medicamento
 
 class FichaClinicaForm(forms.ModelForm):
     class Meta:
         model = FichaClinica
-        fields = ['motivo', 'observaciones']
-        widgets = {
-            'motivo': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Describe el motivo de la consulta...'}),
-            'observaciones': forms.Textarea(attrs={'rows': 5, 'placeholder': 'Observaciones del médico...'}),
-        }
-        labels = {
-            'motivo': 'Motivo de la consulta',
-            'observaciones': 'Observaciones',
-        }
-
-class HistorialForm(forms.ModelForm):
-    class Meta:
-        model = Historial
         fields = ['edad']
         widgets = {
             'edad': forms.NumberInput(attrs={'placeholder': 'Edad del paciente'}),
@@ -25,9 +12,27 @@ class HistorialForm(forms.ModelForm):
             'edad': 'Edad',
         }
 
+class ConsultaForm(forms.ModelForm):
+    class Meta:
+        model = Consulta
+        fields = ['fecha_consulta', 'motivo', 'observaciones']  # No incluimos 'medico'
+        widgets = {
+            'fecha_consulta': forms.DateInput(attrs={
+                'type': 'date',
+                'class': 'form-control',
+                'placeholder': 'Seleccione una fecha...',
+            }),
+            'motivo': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Describe el motivo de la consulta...'}),
+            'observaciones': forms.Textarea(attrs={'rows': 5, 'placeholder': 'Observaciones del médico...'}),
+        }
+        labels = {
+            'motivo': 'Motivo de la consulta',
+            'observaciones': 'Observaciones',
+        }
+
 class AlergiasForm(forms.ModelForm):
     class Meta:
-        model = Alergias
+        model = Alergia
         fields = ['descripcion']
         widgets = {
             'descripcion': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Ingrese las alergias del paciente...'}),
@@ -38,7 +43,7 @@ class AlergiasForm(forms.ModelForm):
 
 class DiagnosticosForm(forms.ModelForm):
     class Meta:
-        model = Diagnosticos
+        model = Diagnostico
         fields = ['descripcion']
         widgets = {
             'descripcion': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Describa los diagnósticos realizados...'}),
@@ -60,7 +65,7 @@ class EnfermedadesBaseForm(forms.ModelForm):
 
 class MedicamentosForm(forms.ModelForm):
     class Meta:
-        model = Medicamentos
+        model = Medicamento
         fields = ['nombre']
         widgets = {
             'nombre': forms.TextInput(attrs={'placeholder': 'Nombre del medicamento...'}),

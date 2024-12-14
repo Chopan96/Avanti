@@ -1,9 +1,8 @@
 from django.db import models
 
-class Alergias(models.Model):
-    alergias = models.AutoField(primary_key=True)
-    descripcion = models.TextField(blank=True, null=True)
-    historial = models.ForeignKey('Historial', on_delete=models.CASCADE, db_column='id_historial')
+class Alergia(models.Model):
+    consulta = models.ForeignKey('Consulta', related_name='alergias', on_delete=models.CASCADE)
+    descripcion = models.TextField()
 
-    class Meta:
-        db_table = 'alergias'
+    def __str__(self):
+        return f"Alergia en consulta {self.consulta.fecha_consulta}"

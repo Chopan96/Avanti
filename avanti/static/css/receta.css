@@ -1,0 +1,120 @@
+/* General */
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+}
+
+#contenedor {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Títulos y subtítulos */
+h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+h5 {
+    font-size: 1.2rem;
+    color: #333;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+/* Información del paciente y médico */
+p {
+    font-size: 1rem;
+    margin: 8px 0;
+    color: #333;
+}
+
+strong {
+    font-weight: bold;
+}
+
+/* Listas (Alergias, Medicamentos, Enfermedades Base) */
+ul.list-group {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+ul.list-group li {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+ul.list-group li:last-child {
+    border-bottom: none;
+}
+
+ul.list-group li {
+    font-size: 1rem;
+    color: #555;
+}
+
+/* Botones */
+.btn {
+    padding: 8px 16px;
+    font-size: 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+/* Estilo para la impresión */
+@media print {
+    body {
+        font-size: 12pt;
+        line-height: 1.4;
+    }
+
+    .container {
+        box-shadow: none;
+        border-radius: 0;
+        padding: 0;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    p, h5 {
+        font-size: 1rem;
+    }
+
+    .btn {
+        display: none;
+    }
+}

@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block extra_css %}
 
+{% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/historial.css' %}">
 {% endblock %}
+
 {% block title %}Gestionar Ficha Clínica{% endblock %}
 
 {% block content %}
@@ -15,7 +16,7 @@
         {% endfor %}
     </div>
     {% endif %}
-    <h1>{% if ficha_clinica.id %}Editar Ficha Clínica{% else %}Crear Ficha Clínica{% endif %}</h1>
+    <h1>{% if ficha_form.instance.id %}Editar Ficha Clínica{% else %}Crear Ficha Clínica{% endif %}</h1>
     <form method="post">
         {% csrf_token %}
         
@@ -27,26 +28,33 @@
 
         <!-- Formulario Ficha Clínica -->
         <div>
-            <label for="{{ ficha_form.motivo.id_for_label }}">{{ ficha_form.motivo.label }}</label>
-            {{ ficha_form.motivo }}
-            {% if ficha_form.motivo.errors %}
-                <div class="error">{{ ficha_form.motivo.errors }}</div>
-            {% endif %}
-        </div>
-        <div>
-            <label for="{{ ficha_form.observaciones.id_for_label }}">{{ ficha_form.observaciones.label }}</label>
-            {{ ficha_form.observaciones }}
-            {% if ficha_form.observaciones.errors %}
-                <div class="error">{{ ficha_form.observaciones.errors }}</div>
+            <label for="{{ ficha_form.edad.id_for_label }}">{{ ficha_form.edad.label }}</label>
+            {{ ficha_form.edad }}
+            {% if ficha_form.edad.errors %}
+                <div class="error">{{ ficha_form.edad.errors }}</div>
             {% endif %}
         </div>
 
-        <!-- Formulario Historial -->
+        <!-- Formulario Consulta -->
         <div>
-            <label for="{{ historial_form.edad.id_for_label }}">{{ historial_form.edad.label }}</label>
-            {{ historial_form.edad }}
-            {% if historial_form.edad.errors %}
-                <div class="error">{{ historial_form.edad.errors }}</div>
+            <label for="{{ consulta_form.fecha_consulta.id_for_label }}">{{ consulta_form.fecha_consulta.label }}</label>
+            {{ consulta_form.fecha_consulta }}
+            {% if consulta_form.fecha_consulta.errors %}
+                <div class="error">{{ consulta_form.fecha_consulta.errors }}</div>
+            {% endif %}
+        </div>
+        <div>
+            <label for="{{ consulta_form.motivo.id_for_label }}">{{ consulta_form.motivo.label }}</label>
+            {{ consulta_form.motivo }}
+            {% if consulta_form.motivo.errors %}
+                <div class="error">{{ consulta_form.motivo.errors }}</div>
+            {% endif %}
+        </div>
+        <div>
+            <label for="{{ consulta_form.observaciones.id_for_label }}">{{ consulta_form.observaciones.label }}</label>
+            {{ consulta_form.observaciones }}
+            {% if consulta_form.observaciones.errors %}
+                <div class="error">{{ consulta_form.observaciones.errors }}</div>
             {% endif %}
         </div>
 
@@ -93,5 +101,5 @@
         </div>
     </form>
 </div>
-
 {% endblock %}
+

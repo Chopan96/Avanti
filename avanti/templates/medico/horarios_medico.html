@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Horarios del Médico{% endblock %}
+
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'css/ver_agenda.css' %}">
+<link rel="stylesheet" href="{% static 'css/modal.css' %}">
+
+{% endblock %}
+
+{% block content %}
+<div>
+    <div class="formulario">
+        <h1>Horarios del Médico: {{ medico.usuario.first_name }} {{ medico.usuario.last_name }}</h1>
+        <p><strong>Especialidad:</strong> {{ medico.especialidad }}</p>
+
+
+        <div class="main-container">
+            <div id="calendar" data-medico-id="{{ medico.id }}"></div>
+        </div>
+        
+        <!-- Modal -->
+        <div class="modal fade" id="detalleModal" tabindex="-1" aria-labelledby="detalleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="detalleModalLabel">Detalles del Horario</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="modal-paciente"><strong>Paciente:</strong> Cargando...</p>
+                        <p id="modal-prevision"><strong>Previsión:</strong> Cargando...</p>
+                        <p id="modal-fecha"><strong>Fecha:</strong> Cargando...</p>
+                        <p id="modal-hora"><strong>Hora:</strong> Cargando...</p>
+                        <p id="modal-sala"><strong>Sala:</strong> Cargando...</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <div class="botones">
+        <a  class="btn btn-primary" id="volver">Volver</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/locales/es.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const calendarEl = document.getElementById('calendar');
+        const medicoId = calendarEl.getAttribute('data-medico-id');
+        const modalEl = document.getElementById('detalleModal');
+        const modal = new bootstrap.Modal(modalEl);
+    
+        // Campos del modal
+        const citaPaciente = document.getElementById('modal-paciente');
+        const citaPrevision = document.getElementById('modal-prevision');
+        const citaFecha = document.getElementById('modal-fecha');
+        const citaHora = document.getElementById('modal-hora');
+        const citaSala = document.getElementById('modal-sala');
+    
+        // Inicializar FullCalendar
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'timeGridWeek',
+            locale: 'es',
+            timeZone: 'local', // Usamos la zona horaria local del navegador
+            slotMinTime: "08:00",
+            slotMaxTime: "19:00",
+            slotDuration: '00:30:00',
+            slotLabelFormat: { hour: '2-digit', minute: '2-digit', omitZeroMinute: false, meridiem: false },
+            slotLabelInterval: { minutes: 30 },
+            allDaySlot: false,
+            height: 'auto',
+            events: {{ eventos_json|safe }}, // JSON inyectado desde el backend
+            eventClick: function (info) {
+                const eventId = info.event.id;
+    
+                // Solicitar detalles de la cita
+                axios.get(`/horarios/${eventId}/detalles/`)
+                    .then(response => {
+                        const data = response.data;
+                        if (data.success) {
+                            citaPaciente.textContent = `Paciente: ${data.paciente}`;
+                            citaPrevision.textContent = `Previsión: ${data.prevision}`;
+                            citaFecha.textContent = `Fecha: ${data.fecha}`;
+                            citaHora.textContent = `Hora: ${data.hora}`;
+                            citaSala.textContent = `Sala: ${data.sala}`;
+                            modal.show(); // Mostrar el modal
+                        } else {
+                            alert(data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error al obtener detalles de la cita:', error);
+                    });
+            },
+        });
+    
+        calendar.render();
+    });
+    
+</script>
+
+
+{% endblock %}
+

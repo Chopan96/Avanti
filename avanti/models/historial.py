@@ -1,13 +1,9 @@
 from django.db import models
 
 class Historial(models.Model):
-    historial =models.AutoField(primary_key=True)
-    ficha_clinica = models.OneToOneField(
-        'FichaClinica', on_delete=models.CASCADE, related_name='historial'
-    )
-    edad = models.BigIntegerField(blank=True, null=True)
-    
+    ficha_clinica = models.ForeignKey('FichaClinica', on_delete=models.CASCADE, related_name='historiales')
+    consulta = models.ForeignKey('Consulta', on_delete=models.CASCADE, related_name='historiales')
+    fecha_registro = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        db_table = 'historial'
-
+    def __str__(self):
+        return f"Historial del paciente {self.ficha_clinica.paciente.nombre} - Consulta {self.consulta.fecha_consulta}"

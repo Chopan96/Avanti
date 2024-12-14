@@ -1,12 +1,8 @@
 from django.db import models
 
-class Medicamentos(models.Model):
-    medicamentos = models.AutoField(primary_key=True)
-    nombre = models.TextField(blank=True, null=True)
-    historial = models.ForeignKey(
-        'Historial', models.CASCADE, db_column='id_historial'
-    )
+class Medicamento(models.Model):
+    consulta = models.ForeignKey('Consulta', related_name='medicamentos', on_delete=models.CASCADE)
+    nombre = models.CharField(max_length=100)
 
-    class Meta:
-        db_table = 'medicamentos'
-
+    def __str__(self):
+        return f"Medicamento en consulta {self.consulta.fecha_consulta}"

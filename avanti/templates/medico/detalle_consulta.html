@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/receta.css' %}">
+{% endblock %}
+
+
+{% block content %}
+<div class="container mt-4 mb-5" id="contenedor">
+    <h2 class="text-center mb-4">Detalle de Consulta</h2>
+
+    <!-- Información del paciente y médico -->
+    <div class="mb-3">
+        <p><strong>Paciente:</strong> {{ consulta.ficha_clinica.paciente.usuario.first_name }} {{ consulta.ficha_clinica.paciente.usuario.last_name }}</p>
+        <p><strong>Fecha de Consulta:</strong> {{ consulta.fecha_consulta }}</p>
+        <p><strong>Médico:</strong> {{ consulta.medico.usuario.first_name }} {{ consulta.medico.usuario.last_name }}</p>
+    </div>
+
+    <!-- Diagnóstico -->
+    <div class="mb-3">
+        <h5>Diagnostico</h5>
+        {% if consulta.diagnosticos.exists %}
+        <ul class="list-group">
+            {% for diagnostico in consulta.diagnosticos.all %}
+            <li class="list-group-item">{{ diagnostico.descripcion }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No se han registrado Diagnosticos.</p>
+        {% endif %}
+    </div>
+
+    <!-- Alergias -->
+    <div class="mb-3">
+        <h5>Alergias</h5>
+        {% if consulta.alergias.exists %}
+        <ul class="list-group">
+            {% for alergia in consulta.alergias.all %}
+            <li class="list-group-item">{{ alergia.descripcion }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No se han registrado alergias.</p>
+        {% endif %}
+    </div>
+
+    <!-- Medicamentos -->
+    <div class="mb-3">
+        <h5>Medicamentos</h5>
+        {% if consulta.medicamentos.exists %}
+        <ul class="list-group">
+            {% for medicamento in consulta.medicamentos.all %}
+            <li class="list-group-item">{{ medicamento.nombre }} - {{ medicamento.dosis }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No se han registrado medicamentos.</p>
+        {% endif %}
+    </div>
+
+    <!-- Enfermedades Base -->
+    <div class="mb-3">
+        <h5>Enfermedades Base</h5>
+        {% if consulta.enfermedades_base.exists %}
+        <ul class="list-group">
+            {% for enfermedad in consulta.enfermedades_base.all %}
+            <li class="list-group-item">{{ enfermedad.descripcion }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No se han registrado enfermedades base.</p>
+        {% endif %}
+    </div>
+
+    <!-- Botones para imprimir o volver -->
+    <div class="d-flex justify-content-between">
+        <a href="{% url 'administrativo:listado_consultas' consulta.ficha_clinica.paciente.usuario.rut %}" class="btn btn-secondary">Volver</a>
+        <a href="javascript:window.print();" class="btn btn-primary">Imprimir</a>
+    </div>
+</div>
+{% endblock %}
+

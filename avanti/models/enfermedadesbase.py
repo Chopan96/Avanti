@@ -1,11 +1,8 @@
 from django.db import models
 
 class EnfermedadesBase(models.Model):
-    enfbase = models.AutoField(primary_key=True)
-    descripcion = models.TextField(blank=True, null=True)
-    historial = models.ForeignKey(
-        'Historial', models.CASCADE, db_column='id_historial'
-    )
+    consulta = models.ForeignKey('Consulta', related_name='enfermedades_base', on_delete=models.CASCADE)
+    descripcion = models.TextField()
 
-    class Meta:
-        db_table = 'enfermedades_base'
+    def __str__(self):
+        return f"Enfermedad Base en consulta {self.consulta.fecha_consulta}"
