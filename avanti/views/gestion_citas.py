@@ -9,6 +9,9 @@ from collections import defaultdict
 from uuid import UUID
 from django.urls import reverse
 import uuid
+from django.contrib.auth.hashers import make_password
+from django.core.mail import send_mail
+from ..utils import generar_password_temporal
 logger = logging.getLogger(__name__)
 
 
@@ -98,6 +101,8 @@ def ver_citas(request, medico_rut):
         'timestamp': timestamp,
     })
 
+
+
 def reservar_cita(request):
     if request.method == 'POST':
         paciente_rut = request.session.get('paciente_rut')
@@ -124,7 +129,24 @@ def reservar_cita(request):
             usuario = Usuario.objects.get(rut=paciente_rut)
             usuario.email = mail
             usuario.fono = fono
-            usuario.save()
+
+            # Generar una contraseña temporal si no tiene asignada
+            if not usuario.password or usuario.password == '':
+                temp_password = generar_password_temporal()
+                usuario.password = make_password(temp_password)  # Encripta la contraseña temporal
+                usuario.save()
+
+                # Enviar contraseña temporal por correo electrónico
+                send_mail(
+                    'Acceso a su cuenta en Centro Médico Avanti',
+                    f'Estimado/a, su contraseña temporal es: {temp_password}. '
+                    'Por favor, inicie sesión y cámbiela a la brevedad.',
+                    'no-reply@centroavanti.cl',
+                    [usuario.email],
+                    fail_silently=False,
+                )
+            else:
+                usuario.save()
 
             # Obtener o verificar el paciente
             paciente = get_object_or_404(Paciente, usuario=usuario)

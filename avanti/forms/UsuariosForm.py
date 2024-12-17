@@ -3,27 +3,40 @@ from django.contrib.auth.forms import UserCreationForm
 from ..models import Usuario, Medico
 
 class UsuarioForm(UserCreationForm):
+    password1 = forms.CharField(
+        label="Contraseña",
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        required=False
+    )
+    password2 = forms.CharField(
+        label="Confirmar Contraseña",
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        required=False
+    )
+
     class Meta:
         model = Usuario
         fields = ['first_name', 'last_name', 'email', 'rut', 'fono', 'password1', 'password2']
-        widgets = {
-            'password1': forms.PasswordInput(attrs={'class': 'form-control'}),
-            'password2': forms.PasswordInput(attrs={'class': 'form-control'}),
-        }
-        # Personaliza los nombres de los campos en el formulario
         labels = {
             'first_name': 'Nombre',
             'last_name': 'Apellido',
             'email': 'Correo Electrónico',
             'rut': 'RUT',
             'fono': 'Teléfono',
-            'password1': 'Contraseña',
-            'password2': 'Confirmar Contraseña',
         }
-        help_texts = {
-            'password1': 'Tu contraseña debe tener al menos 8 caracteres y no puede ser completamente numérica.',
-            'password2': 'Introduce la misma contraseña para verificarla.',
-        }
+
+    def __init__(self, *args, **kwargs):
+        self.is_edit = kwargs.pop('is_edit', False)  # Acepta parámetro para diferenciar creación/edición
+        super().__init__(*args, **kwargs)
+
+        # Agregar 'form-control' a todos los campos
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control'})
+
+        # Si estamos editando, ocultamos las contraseñas
+        if self.is_edit:
+            self.fields.pop('password1', None)
+            self.fields.pop('password2', None)
 
     def clean_rut(self):
         rut = self.cleaned_data.get('rut')
@@ -41,18 +54,22 @@ class UsuarioForm(UserCreationForm):
 
     def clean_password1(self):
         password1 = self.cleaned_data.get('password1')
-        if password1 and len(password1) < 8:
-            raise forms.ValidationError("La contraseña debe tener al menos 8 caracteres.")
-        if password1 and password1.isnumeric():
-            raise forms.ValidationError("La contraseña no puede ser completamente numérica.")
+        if not self.is_edit:  # Solo validamos contraseña en modo creación
+            if not password1:
+                raise forms.ValidationError("La contraseña es obligatoria.")
+            if len(password1) < 8:
+                raise forms.ValidationError("La contraseña debe tener al menos 8 caracteres.")
+            if password1.isnumeric():
+                raise forms.ValidationError("La contraseña no puede ser completamente numérica.")
         return password1
 
     def clean_password2(self):
         password1 = self.cleaned_data.get('password1')
         password2 = self.cleaned_data.get('password2')
-        if password1 != password2:
+        if not self.is_edit and password1 != password2:
             raise forms.ValidationError("Las contraseñas no coinciden.")
         return password2
+
 
 class MedicoForm(forms.ModelForm):
     class Meta:

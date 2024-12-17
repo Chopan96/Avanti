@@ -7,10 +7,20 @@
 {% block content %}
 <div class="container mt-4">
     <div class="formulario">
-        <h2>Crear Disponibilidad para Médico: {{ medico.usuario.nombre }} {{ medico.usuario.apellido }}</h2>
+        <h2>Crear Disponibilidad para Médico: {{ medico.usuario.first_name }} {{ medico.usuario.last_name }}</h2>
         <form method="POST">
             {% csrf_token %}
-            {{ form.as_p }}
+            {% for field in form %}
+                <div class="form-group mb-3">
+                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="text-danger">
+                            {{ field.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
             <button type="submit" class="btn btn-success">Guardar Disponibilidad</button>
             <a href="{% url 'administrativo:ver_disponibilidades' medico.usuario.rut %}" class="btn btn-secondary">Cancelar</a>
         </form>

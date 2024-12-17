@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Detalle de Consulta</h1>
+    <p><strong>Fecha:</strong> {{ consulta.fecha_consulta }}</p>
+    <p><strong>Motivo:</strong> {{ consulta.motivo }}</p>
+    <p><strong>Observaciones:</strong> {{ consulta.observaciones }}</p>
+
+    <h2>Diagnósticos</h2>
+    {% if diagnosticos %}
+        <ul>
+        {% for diagnostico in diagnosticos %}
+            <li>{{ diagnostico.descripcion }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No hay diagnósticos registrados.</p>
+    {% endif %}
+
+    <h2>Medicamentos</h2>
+    {% if medicamentos %}
+        <ul>
+        {% for medicamento in medicamentos %}
+            <li>{{ medicamento.nombre }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No hay medicamentos registrados.</p>
+    {% endif %}
+
+    <h2>Alergias</h2>
+    {% if alergias %}
+        <ul>
+        {% for alergia in alergias %}
+            <li>{{ alergia.descripcion }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No hay alergias registradas.</p>
+    {% endif %}
+
+    <h2>Enfermedades Base</h2>
+    {% if enfermedades_base %}
+        <ul>
+        {% for enfermedad in enfermedades_base %}
+            <li>{{ enfermedad.descripcion }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No hay enfermedades base registradas.</p>
+    {% endif %}
+{% endblock %}

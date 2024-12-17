@@ -1,5 +1,5 @@
 .horarios{
-    background-color: bisque;
+    background-color: white;
     padding: 20px;
     margin: 20px;
 
@@ -28,7 +28,7 @@
 }
 
 .contenedor {
-    background-color: bisque;
+    background-color: white;
     margin: 40px;
     padding: 20px;
     border-radius: 8px;
@@ -42,7 +42,7 @@
 /* Cambiar el color de fondo de los eventos */
 .fc-event {
     background-color: #11527d; /* Azul */
-    color: gray; /* Texto blanco */
+    color: #F0F0F0; /* Texto blanco */
     border: 1px solid black;
 }
 
@@ -70,7 +70,7 @@
 
 
 .fc-timegrid-slot {
-    background-color: rgba(128, 128, 128, 0.763);
+    background-color: #F0F0F0;
     border-top: 1px solid #11527d;
 }
 
@@ -88,4 +88,12 @@
 .fc-daygrid-day {
     border: 1px solid #FF851B;
     padding: 5px;
+}
+
+.btn-primary{
+    background-color: #ED6E0F;
+}
+
+.btn-primary:hover{
+    background-color: #054567;
 }

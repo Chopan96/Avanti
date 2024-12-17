@@ -8,3 +8,6 @@ from .gestion_citas import formulario_reserva,ver_citas, citas_medicos, reservar
 from .login import CustomLoginView,ingreso
 from .gestion_pacientes import buscar_paciente
 from . gestion_medico_horario import ver_horarios_medico,obtener_detalles_cita
+from .gestion_ingreso import gestionar_paciente,listar_pacientes
+from .ficha_paciente import ficha_clinica_paciente,detalle_paciente_consulta
+from .gestion_password import CustomPasswordChangeView

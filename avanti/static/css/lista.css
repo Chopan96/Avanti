@@ -1,0 +1,104 @@
+/* Estilos específicos para la lista de pacientes */
+#contenedor {
+    background-color: #ffffff; /* Fondo blanco para el contenedor */
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+    margin-bottom: 20px;
+}
+
+h2 {
+    color: #054567; /* Título con un color acorde al tema principal */
+    font-size: 28px;
+    font-weight: bold;
+}
+
+form input[type="text"] {
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+    padding: 10px;
+    margin-right: 10px;
+}
+
+form button {
+    background-color: #28A745; /* Color verde para el botón de búsqueda */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #218838; /* Cambio de color al hacer hover */
+}
+
+/* Estilos para la tabla */
+table {
+    width: 100%;
+    margin-top: 30px;
+    border-collapse: collapse;
+}
+
+table th, table td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd; /* Bordes suaves */
+}
+
+table th {
+    background-color: #f8f9fa; /* Color de fondo de las cabeceras */
+    color: #054567;
+    font-weight: bold;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #f2f2f2; /* Color alternativo para las filas */
+}
+
+table tbody tr:hover {
+    background-color: #e9ecef; /* Color al pasar el mouse por las filas */
+}
+
+/* Estilos para los botones */
+.botones {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.botones a {
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.botones .btn-success {
+    background-color: #28A745; /* Verde para el botón de registrar */
+    color: white;
+}
+
+.botones .btn-primary {
+    background-color: #043c77; /* Azul para el botón de volver */
+    color: white;
+}
+
+.botones a:hover {
+    opacity: 0.8; /* Efecto de opacidad al hacer hover */
+}
+
+.botones .btn-success:hover {
+    background-color: #218838; /* Verde oscuro al pasar el mouse */
+}
+
+.botones .btn-primary:hover {
+    background-color: #0056b3; /* Azul oscuro al pasar el mouse */
+}
+
+/* Estilos para el mensaje de no encontrar pacientes */
+table tbody tr td[colspan="5"] {
+    text-align: center;
+    color: #6c757d; /* Color gris para el texto de "No se encontraron pacientes" */
+    padding: 20px 0;
+}

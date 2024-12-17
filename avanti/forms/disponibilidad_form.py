@@ -5,7 +5,19 @@ from datetime import time
 
 class DisponibilidadForm(forms.ModelForm):
     medico_rut = forms.CharField(max_length=12, label="RUT del Médico", widget=forms.TextInput(attrs={'readonly': 'readonly'}))
-
+    horainicio = forms.TimeField(
+        widget=forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
+        label="Hora de inicio"
+    )
+    horafin = forms.TimeField(
+        widget=forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
+        label="Hora de fin"
+    )
+    dia = forms.ChoiceField(
+        choices=Disponibilidad.DIAS_SEMANA,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        label="Día de la semana"
+    )
     class Meta:
         model = Disponibilidad
         fields = ['medico_rut', 'dia', 'horainicio', 'horafin']

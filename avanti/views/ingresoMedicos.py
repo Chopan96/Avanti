@@ -9,11 +9,10 @@ def registrar_medico(request):
         medico_form = MedicoForm(request.POST)
         if usuario_form.is_valid() and medico_form.is_valid():
             usuario = usuario_form.save(commit=False)
-            usuario.tipo = 'medico'  # Asegúrate de que el tipo sea 'medico'
+            usuario.set_password(usuario_form.cleaned_data['password1'])  # Guarda contraseña
             usuario.save()
-
             medico = medico_form.save(commit=False)
-            medico.usuario = usuario  # Relacionar el usuario con el médico
+            medico.usuario = usuario  # Relaciona el médico con el usuario
             medico.save()
 
             return redirect('administrativo:lista_medicos')  # Cambia a la URL deseada
@@ -37,19 +36,20 @@ def editar_medico(request, rut):
     medico = get_object_or_404(Medico, usuario=usuario)
 
     if request.method == 'POST':
-        usuario_form = UsuarioForm(request.POST, instance=usuario)
+        usuario_form = UsuarioForm(request.POST, instance=usuario, is_edit=True)
         medico_form = MedicoForm(request.POST, instance=medico)
         if usuario_form.is_valid() and medico_form.is_valid():
             usuario_form.save()
             medico_form.save()
             return redirect('administrativo:lista_medicos')  # Cambia a la URL deseada
     else:
-        usuario_form = UsuarioForm(instance=usuario)
+        usuario_form = UsuarioForm(instance=usuario, is_edit=True)
         medico_form = MedicoForm(instance=medico)
 
     return render(request, 'administrativo/ingresar_medicos.html', {
         'usuario_form': usuario_form,
         'medico_form': medico_form,
+        'is_edit': True
     })
 
 def eliminar_medico(request, rut):

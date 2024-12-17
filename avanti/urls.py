@@ -8,6 +8,7 @@ urlpatterns = [
     #Login
     path('accounts/login/', views.CustomLoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(next_page=reverse_lazy('default_main')), name='logout'),
+    path('cambiar-password/', views.CustomPasswordChangeView.as_view(), name='cambiar_password'),
     #Main
     path('paciente/', views.paciente, name='paciente_main'),
     path('medico/', views.medico, name='medico_main'),
@@ -31,6 +32,10 @@ urlpatterns = [
     path('api/horarios/<uuid:horario_id>/eliminar/', views.EliminarHorarioView.as_view(), name='eliminar_horario'), 
     path('generar_horarios/<str:medico_rut>/', views.generar_horarios_view, name='generar_horarios'),
     path('ver-horarios/<str:medico_rut>/', views.ver_horarios, name='ver_horarios'),
+    #Gestion Pacientes
+    path('pacientes/', views.listar_pacientes, name='listar_pacientes'),
+    path('pacientes/gestionar/', views.gestionar_paciente, name='gestionar_paciente'),
+    path('pacientes/gestionar/<str:rut>/', views.gestionar_paciente, name='gestionar_paciente'),
     #Ficha Clinica
     path('crear_ficha/', views.crear_ficha_view, name='crear_ficha'),
     path('consultas/<str:rut>/', views.listado_consultas, name='listado_consultas'),
@@ -51,6 +56,9 @@ urlpatterns = [
     path('editar_cita/<str:medico_rut>/<str:cita>/', views.editar_cita, name='editar_cita'),
     path('cita/cancelar/<str:cita>/', views.cancelar_cita, name='cancelar_cita'),
 
+    #Ficha desde Paciente
+    path('ficha/', views.ficha_clinica_paciente, name='ficha_clinica'),
+    path('consulta/<int:consulta_id>/', views.detalle_paciente_consulta, name='detalle_consulta'),
     #Horario Vista Medico
     path('horarios/', views.ver_horarios_medico, name='ver_horarios'),
     path('horarios/<uuid:horario_id>/detalles/', views.obtener_detalles_cita, name='detalles_cita'),

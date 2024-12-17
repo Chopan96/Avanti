@@ -11,19 +11,21 @@
     <div class="contenedor">
         
         <h1>Horarios de {{ medico.usuario.first_name }} {{ medico.usuario.last_name }}</h1>
+        <hr>
         <div id="calendario" style="display: block;">
             <div id="calendar" data-medico-rut="{{ medico.usuario.rut }}"></div>
         </div>
 
         <!-- Botones para editar y eliminar horario -->
         <div id="horario-actions" style="display: none;">
+            <hr>
             <h3>Editar Horario</h3>
             <label>Inicio:</label>
             <input type="datetime-local" id="fechainicio">
             <label>Fin:</label>
             <input type="datetime-local" id="fechafin">
-            <button id="saveBtn">Guardar Cambios</button>
-            <button id="deleteBtn">Eliminar Horario</button>
+            <button class="btn btn-primary" id="saveBtn">Guardar Cambios</button>
+            <button class="btn btn-primary" id="deleteBtn">Eliminar Horario</button>
         </div>
     </div>
     <div class="botones">

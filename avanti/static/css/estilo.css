@@ -5,21 +5,21 @@ nav{
 .navbar{
 
 
-left: 0;
-width: 100%;
+  left: 0;
+  width: 100%;
 
 }
 body{
-background-image: url(../imagenes/background.png);
-display: flex;
-flex-direction: column;
-min-height: 100vh;
-margin: 0;
-background-color: rgba(0, 0, 0, 0.103);
+  background-image: url(../imagenes/background.png);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  background-color: rgba(0, 0, 0, 0.103);
 }
 
 .titulo{
-  background-color: bisque;
+  background-color: rgba(255, 228, 196, 0.171);
   padding: 15px;
   border-radius: 8px;
   max-width: max-content;
@@ -41,13 +41,14 @@ a:hover {
 
 header{
 
-left: 0;
-width: 100%;
+  left: 0;
+  width: 100%;
   background-color: #054567;
   padding: 2px;
   text-align: center;
   color: white;
   font-size: 25px;
+  
 }
 .btn-custom {
   min-height: 60px;
@@ -94,47 +95,49 @@ width: 100%;
 }
 
 .footer {
-background-color: #054567;
-color: white;
-padding: 10px;
-text-align: center;
-width: 100%;
+  background-color: #054567;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  font-size: 14px; /* Ajustar según sea necesario */
+  line-height: 1.6; /* Mejora la legibilidad */
 }
 
+
 .card-img-top{
-padding: 8px;
+  padding: 8px;
 }
 
 .card{
-background-color:  rgb(95, 158, 160);
-margin: 8px;
-display: flex;
-flex-direction: column;
+  background-color:  #F0F0F0;
+  margin: 8px;
+  display: flex;
+  flex-direction: column;
 }
 .card-body {
-flex-grow: 1; /* El contenido ocupa el espacio restante */
+  flex-grow: 1; /* El contenido ocupa el espacio restante */
 }
 
 .card-footer {
-display: flex;
-justify-content: flex-end;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .btn-info{
-justify-content:flex-end end;
+  justify-content:flex-end end;
 }
 
 
 html, body {
-margin: 0;
-padding: 0;
-min-height: 100vh; /* Altura mínima de toda la ventana */
-display: flex;
-flex-direction: column; /* Organizar elementos verticalmente */
+  margin: 0;
+  padding: 0;
+  min-height: 100vh; /* Altura mínima de toda la ventana */
+  display: flex;
+  flex-direction: column; /* Organizar elementos verticalmente */
 }
 
 main {
-flex-grow: 1; /* Ocupa el espacio disponible entre el header y el footer */
+  flex-grow: 1; /* Ocupa el espacio disponible entre el header y el footer */
 }
 
 .botones{

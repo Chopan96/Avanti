@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/formulario.css' %}">
+{% endblock %}
+{% block content %}
+<div class="formulario">
+    <div class="container mt-4">
+        <h1 class="mb-4">Ficha Clínica de {{ ficha_clinica.paciente.usuario.first_name }} {{ ficha_clinica.paciente.usuario.last_name }}</h1>
+        <hr>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <p><strong>Edad:</strong> {{ ficha_clinica.edad }}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Fecha de creación:</strong> {{ ficha_clinica.fecha_creacion }}</p>
+            </div>
+        </div>
+        <hr>
+        <h2 class="mt-5">Consultas</h2>
+        
+        {% if consultas %}
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Fecha de Consulta</th>
+                    <th>Motivo</th>
+                    <th>Observaciones</th>
+                    <th>Detalles</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for consulta in consultas %}
+                <tr>
+                    <td>{{ consulta.fecha_consulta }}</td>
+                    <td>{{ consulta.motivo }}</td>
+                    <td>{{ consulta.observaciones }}</td>
+                    <td><a href="{% url 'paciente:detalle_consulta' consulta.id %}" class="btn btn-info btn-sm">Ver Detalles</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No hay consultas registradas.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

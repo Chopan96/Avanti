@@ -1,7 +1,5 @@
 from django.db import models
 
-from django.db import models
-
 class Consulta(models.Model):
     fecha_consulta = models.DateField()
     motivo = models.TextField()
