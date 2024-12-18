@@ -6,3 +6,6 @@ class Administrativo(models.Model):
 
     class Meta:
         db_table = 'administrativo'
+
+    def __str__(self):
+        return self.usuario.first_name

@@ -6,3 +6,6 @@ class Medico(models.Model):
 
     class Meta:
         db_table = 'medico'
+
+    def __str__(self):
+        return self.usuario.first_name

@@ -1,9 +1,13 @@
 from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required,user_passes_test
 from django.http import JsonResponse
 from ..models import Medico, Horario, Cita
 
+def is_medico(user):
+    return user.groups.filter(name='Medico').exists()
+
 @login_required
+@user_passes_test(is_medico)
 def ver_horarios_medico(request):
     # Obtener el perfil del médico asociado al usuario logueado
     medico = get_object_or_404(Medico, usuario=request.user)

@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from ..models import Disponibilidad, Medico
 from ..forms import DisponibilidadForm
-from django.contrib import messages
-from django.views.generic import CreateView
-from django.urls import reverse
+from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
+# Verificar si el usuario pertenece al grupo 'Personal Administrativo'
+def is_personal(user):
+    return user.groups.filter(name='Personal Administrativo').exists()
 
-
+@login_required
+@user_passes_test(is_personal)
 def crear_disponibilidad(request, medico_rut):
     medico = get_object_or_404(Medico, usuario__rut=medico_rut)
 
@@ -24,6 +26,8 @@ def crear_disponibilidad(request, medico_rut):
         'medico': medico,
     })
 
+@login_required
+@user_passes_test(is_personal)
 def ver_disponibilidades(request, medico_rut):
     # Obtiene el objeto Medico usando el rut proporcionado
     medico = get_object_or_404(Medico, usuario__rut=medico_rut)
@@ -37,6 +41,8 @@ def ver_disponibilidades(request, medico_rut):
         'disponibilidades': disponibilidades
     })
 
+@login_required
+@user_passes_test(is_personal)
 def editar_disponibilidad(request, disponibilidad_id):
     disponibilidad = get_object_or_404(Disponibilidad, pk=disponibilidad_id)
     medico_rut = disponibilidad.medico.usuario.rut  # Obtener el RUT del médico
@@ -50,6 +56,8 @@ def editar_disponibilidad(request, disponibilidad_id):
 
     return render(request, 'administrativo/editar_disponibilidad.html', {'form': form, 'disponibilidad': disponibilidad})
 
+@login_required
+@user_passes_test(is_personal)
 def eliminar_disponibilidad(request, disponibilidad_id):
     disponibilidad = get_object_or_404(Disponibilidad, pk=disponibilidad_id)
     medico_rut = disponibilidad.medico.usuario.rut

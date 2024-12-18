@@ -86,3 +86,38 @@ class MedicoForm(forms.ModelForm):
         if not especialidad:
             raise forms.ValidationError("El campo especialidad no puede estar vacío.")
         return especialidad
+
+
+class UsuarioEditForm(forms.ModelForm):
+    class Meta:
+        model = Usuario
+        fields = ['first_name', 'last_name', 'email', 'rut', 'fono']
+        labels = {
+            'first_name': 'Nombre',
+            'last_name': 'Apellido',
+            'email': 'Correo Electrónico',
+            'rut': 'RUT',
+            'fono': 'Teléfono',
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control'})
+
+    def clean_rut(self):
+        rut = self.cleaned_data.get('rut')
+        if not rut:
+            raise forms.ValidationError("El campo RUT no puede estar vacío.")
+        rut_formateado = normalizar_rut(rut)
+        if not rut_formateado:
+            raise forms.ValidationError("El RUT ingresado es inválido.")
+        return rut_formateado
+
+    def clean(self):
+        cleaned_data = super().clean()
+        for field_name in ['first_name', 'last_name', 'email', 'rut', 'fono']:
+            value = cleaned_data.get(field_name)
+            if not value:
+                self.add_error(field_name, f"El campo {field_name} no puede estar vacío.")
+        return cleaned_data

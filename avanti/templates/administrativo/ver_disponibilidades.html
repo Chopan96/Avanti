@@ -6,43 +6,44 @@
 {% endblock %}
 {% block content %}
 <div class="container mt-4">
-    <div class="formulario">
-        <h2>Disponibilidades de {{ medico.usuario.first_name }} {{ medico.usuario.last_name }}</h2>
-        
-        <table border="1" class="mt-3">
-            <thead>
-                <tr>
-                    <th>Día</th>
-                    <th>Hora Inicio</th>
-                    <th>Hora Fin</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for disponibilidad in disponibilidades %}
-                <tr>
-                    <td>{{ disponibilidad.get_dia_display }}</td>
-                    <td>{{ disponibilidad.horainicio|date:"H:i" }}</td>
-                    <td>{{ disponibilidad.horafin|date:"H:i" }}</td>
-                    <td>
-                        <ul>
-                        <li><a href="{% url 'administrativo:editar_disponibilidad' disponibilidad.disponibilidad %}">Editar</a></li>
-                        <li><a href="{% url 'administrativo:eliminar_disponibilidad' disponibilidad.disponibilidad %}" onclick="return confirm('¿Estás seguro de eliminar esta disponibilidad?');">Eliminar</a></li>
-                        </ul>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="4">No hay disponibilidades registradas.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <div class="botones">
-        <a href="{% url 'administrativo:crear_disponibilidad' medico.usuario.rut %}" class="btn btn-primary" id="volver">Agregar Disponibilidad</a>
-        <a href="{% url 'administrativo:lista_medicos' %}" class="btn btn-primary" id="volver">Volver</a>
-    </div>
-    
+    <div class="cuadro">
+        <div class="formulario">
+            <h2>Disponibilidades de {{ medico.usuario.first_name }} {{ medico.usuario.last_name }}</h2>
+            
+            <table border="1" class="mt-3">
+                <thead>
+                    <tr>
+                        <th>Día</th>
+                        <th>Hora Inicio</th>
+                        <th>Hora Fin</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for disponibilidad in disponibilidades %}
+                    <tr>
+                        <td>{{ disponibilidad.get_dia_display }}</td>
+                        <td>{{ disponibilidad.horainicio|date:"H:i" }}</td>
+                        <td>{{ disponibilidad.horafin|date:"H:i" }}</td>
+                        <td>
+                            <ul>
+                            <li><a href="{% url 'administrativo:editar_disponibilidad' disponibilidad.disponibilidad %}">Editar</a></li>
+                            <li><a href="{% url 'administrativo:eliminar_disponibilidad' disponibilidad.disponibilidad %}" onclick="return confirm('¿Estás seguro de eliminar esta disponibilidad?');">Eliminar</a></li>
+                            </ul>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">No hay disponibilidades registradas.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="botones">
+            <a href="{% url 'administrativo:crear_disponibilidad' medico.usuario.rut %}" class="btn btn-primary" id="volver">Agregar Disponibilidad</a>
+            <a href="{% url 'administrativo:lista_medicos' %}" class="btn btn-primary" id="volver">Volver</a>
+        </div>
+    </div>    
 </div>
 {% endblock %}

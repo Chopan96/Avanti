@@ -10,7 +10,13 @@ import json
 from rest_framework.views import APIView
 from django.utils import timezone
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
+# Verificar si el usuario pertenece al grupo 'Personal Administrativo'
+def is_personal(user):
+    return user.groups.filter(name='Personal Administrativo').exists()
 
+@login_required
+@user_passes_test(is_personal)
 def generar_horarios_view(request, medico_rut):
     medico = get_object_or_404(Medico, usuario__rut=medico_rut)
 
@@ -95,7 +101,8 @@ def generar_horarios(desde, hasta, medico, sala, zona_horaria='America/Santiago'
     return horarios_creados
 
 
-
+@login_required
+@user_passes_test(is_personal)
 def ver_horarios(request, medico_rut):
     medico = get_object_or_404(Medico, usuario__rut=medico_rut)
     return render(request, 'administrativo/ver_horarios.html', {'medico': medico}) 

@@ -14,7 +14,9 @@
         <form method="post">
             {% csrf_token %}
             <h2>Información del Usuario</h2>
+            
             {{ usuario_form.as_p }}
+            
             <hr>
             <h2>Especialidad del Médico</h2>
             {{ medico_form.as_p }}
@@ -25,3 +27,4 @@
     </div>
 </div>
 {% endblock %}
+

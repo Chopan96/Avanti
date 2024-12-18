@@ -26,6 +26,14 @@
     z-index: 9999;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+.cuadro {
+    background-color: #f8f9fa; /* Fondo claro */
+    border: 1px solid #ddd;    /* Borde gris suave */
+    border-radius: 8px;        /* Bordes redondeados */
+    padding: 20px;             /* Espaciado interno */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para dar profundidad */
+    margin-bottom: 20px;
+}
 
 .contenedor {
     background-color: white;

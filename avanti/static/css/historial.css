@@ -15,10 +15,6 @@ h1 {
     color: #333;
 }
 
-/* Estilos para los campos de formulario */
-form div {
-    margin-bottom: 20px;
-}
 
 form label {
     display: block;
@@ -67,10 +63,7 @@ button:hover {
     background-color: #45a049;
 }
 
-/* Agregar margen al final del formulario */
-form button {
-    margin-top: 20px;
-}
+
 
 /* Estilos de campos de texto */
 textarea {

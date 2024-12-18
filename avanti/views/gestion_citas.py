@@ -13,8 +13,7 @@ from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
 from ..utils import generar_password_temporal,normalizar_rut
 logger = logging.getLogger(__name__)
-
-
+from django.contrib.auth.models import Group
 
 
 def formulario_reserva(request):
@@ -46,6 +45,9 @@ def formulario_reserva(request):
         )
 
         if creado_usuario:
+            # Asignar el usuario al grupo Paciente
+            grupo_paciente, _ = Group.objects.get_or_create(name='Paciente')  # Crea el grupo si no existe
+            usuario.groups.add(grupo_paciente)
             logger.info("Usuario creado automáticamente para proceder con la reserva.")
 
         paciente, creado_paciente = Paciente.objects.get_or_create(

@@ -2,7 +2,15 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from ..models import Paciente, Usuario
 from ..forms import PacienteForm, UsuarioBasicoForm
+from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 
+# Verificar si el usuario pertenece al grupo 'Personal Administrativo'
+def is_personal(user):
+    return user.groups.filter(name='Personal Administrativo').exists()
+
+
+@login_required
+@user_passes_test(is_personal)
 def listar_pacientes(request):
     """Vista para listar y buscar pacientes."""
     query = request.GET.get('q')
@@ -12,6 +20,9 @@ def listar_pacientes(request):
         pacientes = Usuario.objects.filter(perfil_paciente__isnull=False)
     return render(request, 'administrativo/lista_pacientes.html', {'pacientes': pacientes, 'query': query})
 
+
+@login_required
+@user_passes_test(is_personal)
 def gestionar_paciente(request, rut=None):
     """Vista para registrar o editar un paciente."""
     if rut:

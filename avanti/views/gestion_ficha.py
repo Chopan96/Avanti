@@ -10,11 +10,15 @@ from ..forms import (
 )
 from ..models import Paciente, FichaClinica, Consulta
 from ..utils import normalizar_rut
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required,user_passes_test
 from django.core.exceptions import PermissionDenied
 from ..utils import normalizar_rut  # Asegúrate de tener una función para normalizar el RUT
 
+def is_medico(user):
+    return user.groups.filter(name='Medico').exists()
+
 @login_required
+@user_passes_test(is_medico)
 def crear_ficha_view(request):
     # Verificar si el usuario autenticado es un médico
     if not hasattr(request.user, 'perfil_medico'):
@@ -106,7 +110,8 @@ def crear_ficha_view(request):
     return render(request, 'medico/crear_ficha.html', context)
 
 
-
+@login_required
+@user_passes_test(is_medico)
 def listado_consultas(request, rut):
     # Normalizar el RUT antes de buscar en la base de datos
     rut_normalizado = normalizar_rut(rut)

@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-1lg9t_ev@(ns3z#deo37e^gng8ko8yttc-0%v&mv8r8f3@fjgj
 DEBUG = True
 
 ALLOWED_HOSTS = []
-LOGIN_URL = '/login/'
+LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/accounts/login/'
 LOGOUT_REDIRECT_URL = "/"
 AUTH_USER_MODEL = 'avanti.Usuario'
