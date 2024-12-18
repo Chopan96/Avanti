@@ -17,7 +17,7 @@
     </div>
     {% endif %}
     <h1>{% if ficha_form.instance.id %}Editar Ficha Clínica{% else %}Crear Ficha Clínica{% endif %}</h1>
-    <form method="post">
+    <form method="post" id="ficha-form">
         {% csrf_token %}
         
         <!-- Campo RUT -->
@@ -101,5 +101,23 @@
         </div>
     </form>
 </div>
+<script src="{% static 'js/rut_utils.js' %}"></script>
+<script>
+    // Validación del formato del RUT
+    function validarRut(rut) {
+        const rutRegex = /^[0-9]{1,2}\.[0-9]{3}\.[0-9]{3}-[0-9Kk]{1}$/;
+        return rutRegex.test(rut);
+    }
+
+    document.getElementById('form-rut').addEventListener('submit', function(e) {
+        const rutInput = document.getElementById('rut');
+        const rut = rutInput.value.trim();
+
+        // Normalizar el RUT antes de enviarlo
+        rutInput.value = normalizarRut(rut);
+    });
+</script>
+
 {% endblock %}
+
 

@@ -1,0 +1,59 @@
+/* Centrar el formulario */
+.formulario {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo del título */
+h1 {
+    color: #333;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Estilo de los campos del formulario */
+.form-label {
+    font-size: 1rem;
+    color: #555;
+}
+
+.form-control {
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-size: 1rem;
+}
+
+/* Estilo de la alerta de error */
+.invalid-feedback {
+    color: #d9534f;
+    font-size: 0.875rem;
+}
+
+/* Estilizar el botón de enviar */
+button[type="submit"] {
+    display: block;
+    width: 100%;
+    background-color: #ED6E0F;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Cambiar color del botón al pasar el cursor */
+button[type="submit"]:hover {
+    background-color: #054567;
+}
+
+/* Estilo para centrar el mensaje de error */
+.alert {
+    text-align: center;
+    font-size: 1rem;
+}

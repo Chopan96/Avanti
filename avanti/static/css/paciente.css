@@ -1,3 +1,10 @@
+.btn-primary{
+    background-color: #ED6E0F;
+}
+
+.btn-primary:hover{
+    background-color: #054567;
+}
 
 .card {
     background: rgb(95, 158, 160);

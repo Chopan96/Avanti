@@ -35,7 +35,7 @@
                     <td>{{ consulta.fecha_consulta }}</td>
                     <td>{{ consulta.motivo }}</td>
                     <td>{{ consulta.observaciones }}</td>
-                    <td><a href="{% url 'paciente:detalle_consulta' consulta.id %}" class="btn btn-info btn-sm">Ver Detalles</a></td>
+                    <td><a href="{% url 'administrativo:detalle_consulta' consulta.id %}" class="btn btn-info btn-sm">Ver Detalles</a></td>
                 </tr>
                 {% endfor %}
             </tbody>

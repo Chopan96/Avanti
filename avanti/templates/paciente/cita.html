@@ -3,44 +3,50 @@
 {% block title %}Cita{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/formulario.css' %}">
+<link rel="stylesheet" href="{% static 'css/citas_medico.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="formulario">
+<div class="container mt-4">
 
-    <h1>Cita Generada Exitosamente</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Campo</th>
-                <th>Información</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><strong>ID de la Cita:</strong></td>
-                <td>{{ cita.cita }}</td>
-            </tr>
-            <tr>
-                <td><strong>Paciente:</strong></td>
-                <td>{{ cita.paciente.usuario.rut }}</td>
-            </tr>
-            <tr>
-                <td><strong>Previsión:</strong></td>
-                <td>{{ cita.prevision }}</td>
-            </tr>
-            <tr>
-                <td><strong>Horario:</strong></td>
-                <td>{{ cita.horario.fechainicio|date:"H:i" }} - {{ cita.horario.fechafin|date:"H:i" }}</td>
-            </tr>
-            <tr>
-                <td><strong>Sala:</strong></td>
-                <td>{{ cita.horario.sala }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="card p-4 shadow-sm">
+        <h1 class="text-center text-success">Cita Generada Exitosamente</h1>
 
-        <a href="{% url 'administrativo:listado_citas' %}">Ver listado de citas</a>
+        <table class="table table-bordered table-striped mt-3">
+            <thead class="thead-light">
+                <tr>
+                    <th>Campo</th>
+                    <th>Información</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>ID de la Cita:</strong></td>
+                    <td>{{ cita.cita }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Paciente:</strong></td>
+                    <td>{{ cita.paciente.usuario.rut }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Previsión:</strong></td>
+                    <td>{{ cita.prevision }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Horario:</strong></td>
+                    <td>{{ cita.horario.fechainicio|date:"H:i" }} - {{ cita.horario.fechafin|date:"H:i" }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Sala:</strong></td>
+                    <td>{{ cita.horario.sala }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="text-center mt-4">
+            <a href="{% url 'administrativo:buscar_rut' %}" class="btn btn-primary">Ver listado de citas</a>
+
+        </div>
+    </div>
 </div>
 {% endblock %}

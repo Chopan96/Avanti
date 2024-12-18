@@ -1,33 +1,40 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/main.css' %}">
+{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col-12 col-md-6 offset-md-3">
-
-                <div class="card">
-                    <div class="card-body">
-                        <h2>Ingreso de Credenciales</h2>
-                        <hr>
-                        <form action="{% url 'login' %}" method="POST">
-
-                            {% csrf_token %}
-                            {{ form.as_p }}
-
-                            <input type="submit" value="Ingresar" class="btn custom-btn-green mb-2">
-                        </form>
-                    </div>
+<div class="container mt-4">
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <ul>
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <li>{{ error|capfirst }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h2>Ingreso de Credenciales</h2>
+                    <hr>
+                    <form action="{% url 'login' %}" method="POST">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="d-flex justify-content-center">
+                            <input type="submit" value="Ingresar" class="btn custom-btn-green mb-2 center">
+                        </div>                       
+                    </form>
                 </div>
-
             </div>
         </div>
-        {% if form.errors %}
-        <ul>
-            {% for field, errors in form.errors.items %}
-                <li>{{ errors }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
     </div>
+</div>
 {% endblock %}

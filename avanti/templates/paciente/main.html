@@ -37,10 +37,15 @@
                         {% endfor %}
                     </select>
                 </div>
-
-                <button type="submit" class="btn btn-primary">Siguiente</button>
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary my-2">Siguiente</button>
+                </div>
+                
             </form>
-            <a href="{% url 'administrativo:listado_citas' %}">Ver o Anular Citas</a>
+            <div class="d-flex justify-content-center">
+                <a href="{% url 'administrativo:buscar_rut' %}" >Ver o Anular Citas</a>
+            </div>
+            
         </div>
     </div>
     {% if messages %}

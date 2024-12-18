@@ -1,67 +1,185 @@
+/* Estilo general para el cuadro */
+.cuadro {
+    background-color: #f9f9f9; /* Fondo gris claro o marfil */
+    padding: 20px;
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+/* Estilo general para el formulario */
 .formulario {
     max-width: 800px;
-    margin: 20px auto;
+    margin: 0 auto;
     padding: 20px;
-    background-color: #f5f5f5;
-    border: 1px solid #ddd;
+    background-color: #ffffff; /* Fondo blanco para el formulario */
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     font-family: Arial, sans-serif;
 }
 
+/* Título */
 .formulario h1 {
-    font-size: 24px;
-    color: #333;
+    font-size: 1.75rem;
+    color: #054567; /* Color para el título */
     margin-bottom: 15px;
-    text-align: center;
 }
 
 .formulario p {
-    font-size: 16px;
+    font-size: 1rem;
     color: #555;
     margin-bottom: 20px;
     text-align: center;
 }
 
-.table-horarios ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.table-horarios li {
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
+    justify-content: center;
     align-items: center;
-    justify-content: space-between;
-    padding: 10px 15px;
-    margin-bottom: 10px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
 }
 
-.hour {
-    font-size: 18px;
-    color: #007bff;
-    font-weight: bold;
+.modal-content {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
 }
 
-.title {
-    flex-grow: 1;
-    margin-left: 15px;
-    font-size: 16px;
-    color: #333;
-}
-
-.btn {
+/* Estilo para los botones del modal */
+#modalSubmit, #modalCancel {
     padding: 8px 15px;
-    font-size: 14px;
+    font-size: 1rem;
     font-weight: bold;
     color: #fff;
-
-    border: none;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
+
+/* Botón Confirmar (verde) */
+#modalSubmit {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+#modalSubmit:hover {
+    background-color: #218838;
+}
+
+/* Botón Cancelar (rojo) */
+#modalCancel {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+#modalCancel:hover {
+    background-color: #c82333;
+}
+
+/* Contenedor principal */
+.main-container {
+    display: flex;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+/* Calendario */
+.calendar-container {
+    flex: 2;
+}
+
+/* Lista de horarios */
+.list-container {
+    flex: 1;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    background: #f9f9f9;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.list-container h3 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* Estilo para los elementos de la lista */
+.horario-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.horario-item:last-child {
+    border-bottom: none;
+}
+
+.horario-item button {
+    background-color: #054567;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.horario-item button:hover {
+    background-color: #ED6E0F; /* Color cuando se pasa el ratón */
+}
+
+/* Botones de navegación en el calendario */
+.fc-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.fc-toolbar-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Resaltar días con horarios */
+.fc-highlight-day {
+    background-color: #d4edda !important;
+    color: #155724;
+    font-weight: bold;
+}
+
+/* Días sin horarios */
+.fc-disabled-day {
+    background-color: #e9ecef !important;
+    pointer-events: none;
+    cursor: default;
+}
+
+/* Botones de acción */
+.btn-primary {
+    background-color: #054567; /* Azul para el botón */
+    border-color: #054567;
+}
+
+.btn-primary:hover {
+    background-color: #ED6E0F; /* Naranja para el hover */
+    border-color: #ED6E0F;
+}
+
+.botones {
+    text-align: center;
+    margin-top: 20px;
+}
+
+

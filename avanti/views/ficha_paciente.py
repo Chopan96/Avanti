@@ -1,23 +1,35 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from ..models import FichaClinica, Consulta
+from ..models import FichaClinica, Consulta, Paciente
+from django.http import HttpResponseForbidden
+
+import logging
+logger = logging.getLogger(__name__)
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404
+
 
 @login_required
 def ficha_clinica_paciente(request):
-    # Obtener el usuario autenticado
-    paciente = request.user.perfil_paciente
+    # Obtener el perfil del paciente asociado al usuario autenticado o lanzar 404
+    paciente = get_object_or_404(Paciente, usuario=request.user)
 
-    # Obtener la ficha clínica del paciente
+    # Obtener la ficha clínica del paciente o lanzar 404
     ficha_clinica = get_object_or_404(FichaClinica, paciente=paciente)
 
-    # Obtener las consultas relacionadas con la ficha clínica
-    consultas = ficha_clinica.consultas.all()
+    # Obtener todas las consultas relacionadas con la ficha clínica
+    consultas = Consulta.objects.filter(ficha_clinica=ficha_clinica)
 
+    # Contexto para el template
     context = {
         'ficha_clinica': ficha_clinica,
         'consultas': consultas,
     }
-    return render(request, 'paciente/ficha_clinica.html', context)
+    return render(request, 'paciente/ver_ficha.html', context)
+
+
+
 
 @login_required
 def detalle_paciente_consulta(request, consulta_id):

@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from ..models import Usuario, Medico
+import re
+from ..utils import normalizar_rut
 
 class UsuarioForm(UserCreationForm):
     password1 = forms.CharField(
@@ -42,7 +44,10 @@ class UsuarioForm(UserCreationForm):
         rut = self.cleaned_data.get('rut')
         if not rut:
             raise forms.ValidationError("El campo RUT no puede estar vacío.")
-        return rut
+        rut_formateado = normalizar_rut(rut)
+        if not rut_formateado:
+            raise forms.ValidationError("El RUT ingresado es inválido.")
+        return rut_formateado
 
     def clean(self):
         cleaned_data = super().clean()

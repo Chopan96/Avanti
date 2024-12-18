@@ -2,28 +2,50 @@
 {% load static %}
 {% block title %}Buscar Citas{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/formulario.css' %}">
+<link rel="stylesheet" href="{% static 'css/buscar.css' %}">
+<!-- Asegurarse de tener bootstrap cargado -->
+
 {% endblock %}
 {% block content %}
-<div class="formulario">
-    <h1>Buscar Citas por RUT</h1>
+<div class="container mt-5">
+    <div class="formulario">
+        <h1 class="text-center mb-4">Buscar Citas por RUT</h1>
 
-    <form method="post">
-        {% csrf_token %}
-        <div class="mb-3">
-            <label for="rut" class="form-label">Ingrese RUT del Paciente:</label>
-            <input type="text" id="rut" name="rut" class="form-control" placeholder="Ingrese RUT del Paciente" required>
-        </div>
+        <form method="post" id="form-rut">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="rut" class="form-label">Ingrese RUT del Paciente:</label>
+                <input type="text" id="rut" name="rut" class="form-control" placeholder="Ingrese RUT del Paciente" required>
+                <div id="rut-error" class="invalid-feedback" style="display: none;">Por favor ingrese un RUT válido (formato 12.345.678-9).</div>
+            </div>
 
-        <button type="submit" class="btn btn-primary">Buscar Citas</button>
-    </form>
-    
-    {% if messages %}
-        <div class="alert alert-danger">
-            {% for message in messages %}
-                {{ message }}
-            {% endfor %}
-        </div>
-    {% endif %}
+            <button type="submit" class="btn btn-primary">Buscar Citas</button>
+        </form>
+
+        {% if messages %}
+            <div class="alert alert-danger mt-3">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
 </div>
+
+<script src="{% static 'js/rut_utils.js' %}"></script>
+<script>
+    // Validación del formato del RUT
+    function validarRut(rut) {
+        const rutRegex = /^[0-9]{1,2}\.[0-9]{3}\.[0-9]{3}-[0-9Kk]{1}$/;
+        return rutRegex.test(rut);
+    }
+
+    document.getElementById('form-rut').addEventListener('submit', function(e) {
+        const rutInput = document.getElementById('rut');
+        const rut = rutInput.value.trim();
+
+        // Normalizar el RUT antes de enviarlo
+        rutInput.value = normalizarRut(rut);
+    });
+</script>
 {% endblock %}

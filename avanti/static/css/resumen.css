@@ -1,0 +1,80 @@
+/* Estilo general del cuadro principal */
+.cuadro {
+    background-color: #f8f9fa; /* Fondo claro */
+    border: 1px solid #ddd;    /* Borde gris suave */
+    border-radius: 8px;        /* Bordes redondeados */
+    padding: 20px;             /* Espaciado interno */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para dar profundidad */
+    margin-bottom: 20px;
+}
+
+/* Estilos para los títulos de las tarjetas */
+.card-header {
+    font-weight: bold;
+    font-size: 1.2rem;
+    padding: 10px 15px;
+    border-bottom: 2px solid #ddd;
+    background-color: #054567; /* Azul oscuro */
+    color: #ffffff;           /* Texto blanco */
+}
+
+/* Listas dentro de las tarjetas */
+.list-group-item {
+    font-size: 1rem;
+    border: none; /* Eliminar bordes entre ítems */
+    padding: 10px 15px;
+    background-color: #ffffff;
+}
+
+.list-group-item:nth-child(odd) {
+    background-color: #f2f2f2; /* Fondo alternativo para filas impares */
+}
+
+/* Texto alternativo cuando no hay datos */
+.text-muted {
+    color: #6c757d; /* Gris claro */
+    font-style: italic;
+}
+
+/* Botón de "Detalles" (puedes eliminar si no aplica a este diseño) */
+.btn-info {
+    background-color: #ED6E0F; /* Naranja vibrante */
+    border-color: #ED6E0F;
+    color: #ffffff;
+}
+
+.btn-info:hover {
+    background-color: #054567; /* Azul oscuro en hover */
+    border-color: #054567;
+    color: #ffffff;
+}
+
+/* Espaciado entre elementos */
+.mb-4 {
+    margin-bottom: 1.5rem !important;
+}
+
+.mt-5 {
+    margin-top: 3rem !important;
+}
+
+/* Ajustes de fuente */
+h1, h2 {
+    font-family: 'Arial', sans-serif;
+    letter-spacing: 1px;
+}
+
+h1.text-primary {
+    color: #054567; /* Azul oscuro para títulos principales */
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .cuadro {
+        padding: 15px; /* Reducir padding en pantallas pequeñas */
+    }
+
+    .card-header {
+        font-size: 1rem; /* Reducir tamaño del texto en títulos */
+    }
+}

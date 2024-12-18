@@ -9,9 +9,10 @@ from ..forms import (
     MedicamentosForm,
 )
 from ..models import Paciente, FichaClinica, Consulta
-
+from ..utils import normalizar_rut
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from ..utils import normalizar_rut  # Asegúrate de tener una función para normalizar el RUT
 
 @login_required
 def crear_ficha_view(request):
@@ -29,8 +30,15 @@ def crear_ficha_view(request):
             messages.error(request, "Debe ingresar un RUT válido.")
             return render(request, 'medico/crear_ficha.html')
 
+        # Normalizar el RUT
+        rut_normalizado = normalizar_rut(rut)
+
+        if not rut_normalizado:
+            messages.error(request, "El RUT ingresado no es válido.")
+            return render(request, 'medico/crear_ficha.html')
+
         # Verificar si existe el paciente
-        paciente = Paciente.objects.filter(usuario__rut=rut).first()
+        paciente = Paciente.objects.filter(usuario__rut=rut_normalizado).first()
         if not paciente:
             messages.error(request, "Paciente no encontrado.")
             return render(request, 'medico/crear_ficha.html')
@@ -100,10 +108,13 @@ def crear_ficha_view(request):
 
 
 def listado_consultas(request, rut):
-    # Obtener el paciente específico usando rut
-    paciente = get_object_or_404(Paciente, usuario__rut=rut)
+    # Normalizar el RUT antes de buscar en la base de datos
+    rut_normalizado = normalizar_rut(rut)
     
-    # Consultas asociadas a la ficha clínica del paciente
+    # Obtener el paciente usando el RUT normalizado
+    paciente = get_object_or_404(Paciente, usuario__rut=rut_normalizado)
+    
+    # Filtrar las consultas asociadas al paciente
     consultas = Consulta.objects.filter(ficha_clinica__paciente=paciente).select_related('medico')
     
     return render(request, 'medico/listado_consultas.html', {

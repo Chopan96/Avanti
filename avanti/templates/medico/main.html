@@ -4,66 +4,66 @@
 {% block title %}Menú Principal - Médico{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/paciente.css' %}">
+<link rel="stylesheet" href="{% static 'css/main.css' %}">
 {% endblock %}
 
 {% block content %}
-<h2>Menú Principal - Médico</h2>
-<div class="container d-flex justify-content-center align-items-center">
-    <div class="row row-cols-1 row-cols-md-3 g-4 mt-1">
 
-        <!-- Ver Horario de Atención -->
-        <div class="col">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h3 class="card-title">Ver Horario de Atención</h3>
-                    <p class="card-text">Aquí puede ver su horario de atención de citas.</p>
-                </div>
-                <div class="card-footer">
-                    <a class="btn btn-primary w-100" href="{% url 'administrativo:ver_horarios' %}">Ver Horario</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Buscar Paciente -->
-        <div class="col">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h3 class="card-title">Ficha Clínica</h3>
-                    <p class="card-text">Accede a una ficha clínica para agregar información de la consulta actual.</p>
-                </div>
-                <div class="card-footer">
-                    <a type="submit" class="btn btn-primary w-100 mt-2" href="{% url 'administrativo:crear_ficha' %}">Buscar Paciente</a>
+<div class="container">
+    <div class="cuadro">
+        <h2>Menú Principal - Médico</h2>
+        <div class="row row-cols-1 row-cols-md-3 g-4 mt-1">
+            <!-- Ver Horario de Atención -->
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title">Ver Horario de Atención</h3>
+                        <p class="card-text">Aquí puede ver su horario de atención de citas.</p>
+                    </div>
+                    <div class="card-footer">
+                        <a class="btn btn-primary w-100" href="{% url 'administrativo:ver_horarios' %}">Ver Horario</a>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Ver Historial Completo -->
-        <div class="col">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h3 class="card-title">Ver Historial Completo de Atenciones Anteriores</h3>
-                    <p class="card-text">Revise todas las atenciones anteriores de un paciente.</p>
-
-                    <!-- Formulario para buscar paciente por RUT -->
-                    <form id="form-historial">
-                        <div class="mb-3">
-                            <label for="rut" class="form-label">Ingrese RUT del Paciente</label>
-                            <input type="text" name="rut" class="form-control" id="rut" placeholder="12345678-9" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100 mt-2">Ver Historial Completo</button>
-                    </form>
+            <!-- Buscar Paciente -->
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title">Ficha Clínica</h3>
+                        <p class="card-text">Accede a una ficha clínica para agregar información de la consulta actual.</p>
+                    </div>
+                    <div class="card-footer">
+                        <a type="submit" class="btn btn-primary w-100 mt-2" href="{% url 'administrativo:crear_ficha' %}">Buscar Paciente</a>
+                    </div>
                 </div>
             </div>
+
+            <!-- Ver Historial Completo -->
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title">Ver Historial Completo de Atenciones Anteriores</h3>
+                        <p class="card-text">Revise todas las atenciones anteriores de un paciente.</p>
+
+                        <!-- Formulario para buscar paciente por RUT -->
+                        <form id="form-historial">
+                            <div class="mb-3">
+                                <label for="rut" class="form-label">Ingrese RUT del Paciente</label>
+                                <input type="text" name="rut" class="form-control" id="rut" placeholder="12345678-9" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 mt-2">Ver Historial Completo</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
+        <!-- Mostrar mensajes de error -->
     </div>
-
-    <!-- Mostrar mensajes de error -->
-    <div id="error-message" class="alert alert-danger d-none mt-3"></div>
-
 </div>
-
+<script src="{% static 'js/rut_utils.js' %}"></script>
 <script>
 // Captura el formulario para redirigir a la URL correcta con el RUT del paciente
 const formHistorial = document.getElementById('form-historial');
@@ -72,16 +72,18 @@ const errorMessage = document.getElementById('error-message');
 formHistorial.addEventListener('submit', async (event) => {
     event.preventDefault(); // Evitar el envío predeterminado del formulario
 
-    const rutInput = document.getElementById('rut').value.trim();
+    // Capturar y normalizar el RUT
+    let rutInput = document.getElementById('rut').value.trim();
+    const rutNormalizado = normalizarRut(rutInput); // Normalización del RUT
 
     try {
-        // Realiza la petición a la API
-        const response = await fetch(`/api/buscar_paciente/?rut=${rutInput}`);
+        // Realiza la petición a la API con el RUT normalizado
+        const response = await fetch(`/api/buscar_paciente/?rut=${encodeURIComponent(rutNormalizado)}`);
         const data = await response.json();
 
         if (data.success) {
-            // Redirige a la URL del historial con el RUT
-            const url = `{% url 'administrativo:listado_consultas' rut='placeholder' %}`.replace('placeholder', rutInput);
+            // Redirige a la URL del historial con el RUT normalizado
+            const url = `{% url 'administrativo:listado_consultas' rut='placeholder' %}`.replace('placeholder', encodeURIComponent(rutNormalizado));
             window.location.href = url;
         } else {
             // Mostrar error si el paciente no existe
@@ -94,6 +96,7 @@ formHistorial.addEventListener('submit', async (event) => {
         errorMessage.classList.remove('d-none');
     }
 });
+
 </script>
 {% endblock %}
 

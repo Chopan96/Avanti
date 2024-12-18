@@ -2,18 +2,19 @@
     width: 80%;
     margin: 30px auto;
     padding: 20px;
-    background-color: rgb(95, 158, 160); /* Fondo blanco para el contenedor */
+    background-color: #f8f9fa; /* Fondo muy pálido para contraste */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
     border-radius: 8px;
 }
 
+/* Título */
 h2 {
     text-align: center;
-    color: #000000; /* Texto blanco */
-    font-size: 0,5 rem;
+    color: #054567; /* Color para el título */
+    font-size: 1.5rem;
     padding: 10px 0;
-    border-radius: 4px; /* Bordes redondeados */
-    margin-bottom: 20px; /* Espacio debajo del título */
+    border-bottom: 2px solid #ED6E0F; /* Línea debajo del título */
+    margin-bottom: 20px;
 }
 
 /* Tabla */
@@ -22,9 +23,10 @@ table {
     border-collapse: collapse;
 }
 
+/* Encabezado de la tabla */
 thead {
-    background-color: #e07b18;
-    color: #000000;
+    background-color: #ED6E0F; /* Color de fondo para encabezados */
+    color: #ffffff; /* Texto blanco */
 }
 
 thead th {
@@ -33,34 +35,36 @@ thead th {
     text-align: left;
 }
 
+/* Filas pares */
 tbody tr:nth-child(even) {
-    background-color: bisque; /* Fondo gris claro para filas pares */
+    background-color: #f0f8ff; /* Fondo muy pálido rosado */
 }
 
+/* Fila al pasar el ratón */
 tbody tr:hover {
-    background-color: bisque; /* Cambio de color al pasar el ratón */
+    background-color: #ffebcd; /* Cambio a un color más suave al pasar el ratón */
 }
 
+/* Celdas de la tabla */
 tbody td {
     padding: 10px;
     font-size: 1rem;
     text-align: left;
-    
+    background-color: #f8f9fa; /* Fondo blanco muy suave */
 }
 
+/* Borde de la tabla */
 table, th, td {
-    border: 1px solid #000000; /* Borde ligero para la tabla */
+    border: 1px solid #054567; /* Borde azul oscuro */
 }
 
-table {
-    border-radius: 8px;
-    overflow: hidden; /* Borde redondeado en las esquinas */
+/* Botón de acción */
+.btn-primary {
+    background-color: #054567; /* Color de fondo del botón */
+    border-color: #054567; /* Borde del botón */
 }
 
-/* Estilo para las celdas */
-td, th {
-    text-align: left;
-    padding: 10px;
-    font-size: 1rem;
-    background-color: bisque;
+.btn-primary:hover {
+    background-color: #ED6E0F; /* Cambio de color cuando se pasa el ratón */
+    border-color: #ED6E0F; /* Cambio de borde */
 }

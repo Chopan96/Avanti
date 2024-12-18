@@ -10,7 +10,7 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(next_page=reverse_lazy('default_main')), name='logout'),
     path('cambiar-password/', views.CustomPasswordChangeView.as_view(), name='cambiar_password'),
     #Main
-    path('paciente/', views.paciente, name='paciente_main'),
+    path('paciente/', views.ficha_clinica_paciente, name='paciente_main'),
     path('medico/', views.medico, name='medico_main'),
     path('administrativo/', views.personal, name='administrativo_main'),
     path('', views.home, name='default_main'),
@@ -39,7 +39,7 @@ urlpatterns = [
     #Ficha Clinica
     path('crear_ficha/', views.crear_ficha_view, name='crear_ficha'),
     path('consultas/<str:rut>/', views.listado_consultas, name='listado_consultas'),
-    path('<int:consulta_id>/detalle/', views.detalle_consulta, name='detalle_consulta'),
+    path('<int:consulta_id>/detalle/', views.detalle_consulta, name='detalle_consulta_medico'),
     path('api/buscar_paciente/', views.buscar_paciente, name='buscar_paciente'),
 
     #Citas
@@ -51,13 +51,12 @@ urlpatterns = [
     path('error/', views.error_cita, name='error_cita'),
 
     #Citas ya generadas
-    path('citas/listado/', views.listado_citas, name='listado_citas'),
-    path('buscar/rut/', views.listado_citas, name='buscar_rut'),  # Vista para ingresar el RUT
+    path('buscar/rut/', views.buscar_rut, name='buscar_rut'),  # Vista para ingresar el RUT
+    path('citas/listado/<str:rut>', views.listado_citas, name='listado_citas'),  # Vista para mostrar las citas
     path('editar_cita/<str:medico_rut>/<str:cita>/', views.editar_cita, name='editar_cita'),
     path('cita/cancelar/<str:cita>/', views.cancelar_cita, name='cancelar_cita'),
 
     #Ficha desde Paciente
-    path('ficha/', views.ficha_clinica_paciente, name='ficha_clinica'),
     path('consulta/<int:consulta_id>/', views.detalle_paciente_consulta, name='detalle_consulta'),
     #Horario Vista Medico
     path('horarios/', views.ver_horarios_medico, name='ver_horarios'),

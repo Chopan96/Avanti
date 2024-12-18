@@ -13,3 +13,31 @@
 .btn-primary:hover{
     background-color: #054567;
 }
+
+/* Estilo para el cuadro que contiene el contenido */
+.cuadro {
+    background-color: #ffffff; /* Fondo blanco para el cuadro */
+    padding: 2rem;
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    margin: 2rem auto; /* Margen superior e inferior */
+    max-width: 1100px; /* Ancho máximo */
+}
+
+/* Estilos generales */
+.cuadro h2 {
+    font-weight: bold;
+    color: #007bff; /* Color azul de Bootstrap */
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+/* Ajustes para las tarjetas de contenido */
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-footer {
+    background-color: #f8f9fa;
+}
+

@@ -11,14 +11,11 @@ from django.urls import reverse
 import uuid
 from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
-from ..utils import generar_password_temporal
+from ..utils import generar_password_temporal,normalizar_rut
 logger = logging.getLogger(__name__)
 
 
-def normalizar_rut(rut):
-    # Eliminar puntos y guiones
-    rut_normalizado = re.sub(r'[^0-9]', '', rut)
-    return rut_normalizado
+
 
 def formulario_reserva(request):
     if request.method == 'GET':
@@ -38,6 +35,9 @@ def formulario_reserva(request):
 
         # Normalizar el RUT
         rut_normalizado = normalizar_rut(rut)
+        if not rut_normalizado:
+            logger.error("El RUT ingresado no es válido.")
+            return redirect('administrativo:formulario_reserva')
 
         # Verificar si el usuario existe o crearlo
         usuario, creado_usuario = Usuario.objects.get_or_create(
@@ -48,11 +48,10 @@ def formulario_reserva(request):
         if creado_usuario:
             logger.info("Usuario creado automáticamente para proceder con la reserva.")
 
-
         paciente, creado_paciente = Paciente.objects.get_or_create(
-        usuario=usuario,  # Relación con el modelo Usuario
-        defaults={'direccion': ''}
-)
+            usuario=usuario,  # Relación con el modelo Usuario
+            defaults={'direccion': ''}
+        )
 
         if creado_paciente:
             logger.info("Paciente registrado automáticamente para proceder con la reserva.")
@@ -64,6 +63,7 @@ def formulario_reserva(request):
 
         # Redirigir a la página siguiente
         return redirect('administrativo:citas_medicos')
+
 
 def citas_medicos(request):
     """
@@ -186,28 +186,47 @@ def error_cita(request):
     # Obtiene los mensajes de error si existen
     return render(request, 'paciente/error_cita.html')
 
-
-#Citas ya generadas
-def listado_citas(request):
+# Buscar RUT del paciente
+def buscar_rut(request):
     if request.method == 'POST':
         rut_paciente = request.POST.get('rut')
+
         try:
-            # Buscar el paciente por su RUT
-            paciente = get_object_or_404(Paciente, usuario__rut=rut_paciente)
+            # Buscar el paciente con el RUT tal como fue ingresado
+            paciente = Paciente.objects.get(usuario__rut=rut_paciente)
 
-            # Obtener las citas asociadas al paciente
-            citas = Cita.objects.filter(paciente=paciente)
+            # Redirigir a la vista de listado de citas con el paciente encontrado
+            return redirect('administrativo:listado_citas', rut=rut_paciente)
 
-            # Verifica que las citas existen
-            if not citas.exists():
-                messages.warning(request, "No se encontraron citas para este paciente.")
-                
-            return render(request, 'paciente/listado_cita.html', {'citas': citas})
         except Paciente.DoesNotExist:
+            # Si el paciente no existe, muestra un mensaje de error y permanece en la misma página
             messages.error(request, "Paciente no encontrado. Verifique el RUT.")
-            return render(request, 'paciente/listado_cita.html')
-    
+            return render(request, 'paciente/buscar_rut.html')
+
     return render(request, 'paciente/buscar_rut.html')
+
+
+# Listado de citas para el paciente
+def listado_citas(request, rut):
+    try:
+        # Buscar el paciente con el RUT proporcionado
+        paciente = Paciente.objects.get(usuario__rut=rut)
+
+        # Obtener las citas asociadas al paciente
+        citas = Cita.objects.filter(paciente=paciente)
+
+        # Verifica que las citas existen
+        if not citas.exists():
+            messages.warning(request, "No se encontraron citas para este paciente.")
+        
+        return render(request, 'paciente/listado_cita.html', {'citas': citas})
+
+    except Paciente.DoesNotExist:
+        messages.error(request, "Paciente no encontrado. Verifique el RUT.")
+        return render(request, 'paciente/buscar_rut.html')
+
+
+
 
 
 
@@ -307,4 +326,4 @@ def cancelar_cita(request, cita):
     cita.delete()
     messages.success(request, "Cita cancelada exitosamente. El horario está disponible nuevamente.")
     
-    return redirect('administrativo:listado_citas')
+    return redirect('administrativo:buscar_rut')

@@ -1,52 +1,107 @@
 {% extends 'base.html' %}
+{% load static %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/resumen.css' %}">
+{% endblock %}
 {% block content %}
-    <h1>Detalle de Consulta</h1>
-    <p><strong>Fecha:</strong> {{ consulta.fecha_consulta }}</p>
-    <p><strong>Motivo:</strong> {{ consulta.motivo }}</p>
-    <p><strong>Observaciones:</strong> {{ consulta.observaciones }}</p>
+<div class="cuadro container mt-5 p-4 bg-light border rounded">
+    <h1 class="mb-4 text-primary text-center">Detalle de Consulta</h1>
 
-    <h2>Diagnósticos</h2>
-    {% if diagnosticos %}
-        <ul>
-        {% for diagnostico in diagnosticos %}
-            <li>{{ diagnostico.descripcion }}</li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>No hay diagnósticos registrados.</p>
-    {% endif %}
+    <div class="card mb-4">
+        <div class="card-header">
+            Información General
+        </div>
+        <div class="card-body">
+            <p><strong>Fecha:</strong> {{ consulta.fecha_consulta }}</p>
+            <p><strong>Motivo:</strong> {{ consulta.motivo }}</p>
+            <p><strong>Observaciones:</strong> {{ consulta.observaciones }}</p>
+        </div>
+    </div>
 
-    <h2>Medicamentos</h2>
-    {% if medicamentos %}
-        <ul>
-        {% for medicamento in medicamentos %}
-            <li>{{ medicamento.nombre }}</li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>No hay medicamentos registrados.</p>
-    {% endif %}
+    <div class="row">
+        <!-- Diagnósticos -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    Diagnósticos
+                </div>
+                <div class="card-body">
+                    {% if diagnosticos %}
+                        <ul class="list-group">
+                        {% for diagnostico in diagnosticos %}
+                            <li class="list-group-item">{{ diagnostico.descripcion }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted">No hay diagnósticos registrados.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
 
-    <h2>Alergias</h2>
-    {% if alergias %}
-        <ul>
-        {% for alergia in alergias %}
-            <li>{{ alergia.descripcion }}</li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>No hay alergias registradas.</p>
-    {% endif %}
+        <!-- Medicamentos -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    Medicamentos
+                </div>
+                <div class="card-body">
+                    {% if medicamentos %}
+                        <ul class="list-group">
+                        {% for medicamento in medicamentos %}
+                            <li class="list-group-item">{{ medicamento.nombre }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted">No hay medicamentos registrados.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <h2>Enfermedades Base</h2>
-    {% if enfermedades_base %}
-        <ul>
-        {% for enfermedad in enfermedades_base %}
-            <li>{{ enfermedad.descripcion }}</li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>No hay enfermedades base registradas.</p>
-    {% endif %}
+    <div class="row">
+        <!-- Alergias -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    Alergias
+                </div>
+                <div class="card-body">
+                    {% if alergias %}
+                        <ul class="list-group">
+                        {% for alergia in alergias %}
+                            <li class="list-group-item">{{ alergia.descripcion }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted">No hay alergias registradas.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Enfermedades Base -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    Enfermedades Base
+                </div>
+                <div class="card-body">
+                    {% if enfermedades_base %}
+                        <ul class="list-group">
+                        {% for enfermedad in enfermedades_base %}
+                            <li class="list-group-item">{{ enfermedad.descripcion }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted">No hay enfermedades base registradas.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <a href="{% url 'administrativo:paciente_main' %}" class="btn btn-secondary">Volver</a>
+</div>
 {% endblock %}
