@@ -37,6 +37,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-danger" id="finalizar-cita-btn">Finalizar Cita</button>
                     </div>
                 </div>
             </div>
@@ -64,12 +65,24 @@
         const citaFecha = document.getElementById('modal-fecha');
         const citaHora = document.getElementById('modal-hora');
         const citaSala = document.getElementById('modal-sala');
+        const finalizarCitaBtn = document.getElementById('finalizar-cita-btn');
     
+        let currentEventId = null; // Almacena el ID del evento actual
+    
+        // Obtener el token CSRF del DOM
+        const getCSRFToken = () => {
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+            return csrfToken ? csrfToken.value : null;
+        };
+
+        // Configurar axios con el token CSRF
+        axios.defaults.headers.common['X-CSRFToken'] = getCSRFToken();
+
         // Inicializar FullCalendar
         const calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'timeGridWeek',
             locale: 'es',
-            timeZone: 'local', // Usamos la zona horaria local del navegador
+            timeZone: 'local',
             slotMinTime: "08:00",
             slotMaxTime: "19:00",
             slotDuration: '00:30:00',
@@ -81,6 +94,7 @@
             events: {{ eventos_json|safe }}, // JSON inyectado desde el backend
             eventClick: function (info) {
                 const eventId = info.event.id;
+                currentEventId = eventId; // Guarda el ID del evento actual
     
                 // Solicitar detalles de la cita
                 axios.get(`/horarios/${eventId}/detalles/`)
@@ -101,6 +115,29 @@
                         console.error('Error al obtener detalles de la cita:', error);
                     });
             },
+        });
+    
+        // Evento para finalizar cita
+        finalizarCitaBtn.addEventListener('click', function () {
+            if (currentEventId) {
+                axios.post(`/horarios/${currentEventId}/finalizar/`, {
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}' } // Asegúrate de incluir CSRF token
+                })
+                .then(response => {
+                    const data = response.data;
+                    if (data.success) {
+                        alert('La cita ha sido finalizada con éxito.');
+                        modal.hide();
+                        calendar.refetchEvents(); // Refrescar eventos en el calendario
+                    } else {
+                        alert(data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al finalizar la cita:', error);
+                    alert('Hubo un error al intentar finalizar la cita.');
+                });
+            }
         });
     
         calendar.render();

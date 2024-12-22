@@ -1,8 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from ..models import Usuario, Medico
+from ..models import Usuario, Medico,Especialidad
 import re
-from ..utils import normalizar_rut
+from ..utils.utils import normalizar_rut
 
 class UsuarioForm(UserCreationForm):
     password1 = forms.CharField(
@@ -77,15 +77,26 @@ class UsuarioForm(UserCreationForm):
 
 
 class MedicoForm(forms.ModelForm):
+    especialidad = forms.ModelChoiceField(
+        queryset=Especialidad.objects.all(),
+        empty_label="Selecciona una especialidad",
+        widget=forms.Select(attrs={'autocomplete': 'off'})
+    )
     class Meta:
         model = Medico
         fields = ['especialidad']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['especialidad'].queryset = Especialidad.objects.all()
+        self.fields['especialidad'].widget.attrs.update({'class': 'form-control'})
 
     def clean_especialidad(self):
         especialidad = self.cleaned_data.get('especialidad')
         if not especialidad:
             raise forms.ValidationError("El campo especialidad no puede estar vacío.")
         return especialidad
+
 
 
 class UsuarioEditForm(forms.ModelForm):

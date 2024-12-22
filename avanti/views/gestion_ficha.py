@@ -8,11 +8,11 @@ from ..forms import (
     EnfermedadesBaseForm,
     MedicamentosForm,
 )
-from ..models import Paciente, FichaClinica, Consulta
-from ..utils import normalizar_rut
+from ..models import Paciente, FichaClinica, Consulta, Horario
+from ..utils.utils import normalizar_rut
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.core.exceptions import PermissionDenied
-from ..utils import normalizar_rut  # Asegúrate de tener una función para normalizar el RUT
+from ..utils.utils import normalizar_rut  # Asegúrate de tener una función para normalizar el RUT
 
 def is_medico(user):
     return user.groups.filter(name='Medico').exists()
@@ -85,6 +85,15 @@ def crear_ficha_view(request):
                 instance = form.save(commit=False)
                 instance.consulta = consulta
                 instance.save()
+
+                        # Finalizar la cita asociada
+            horario = Horario.objects.filter(medico=medico, citas__paciente=paciente, citas__finalizada=False).first()
+            if horario:
+                cita = horario.citas.filter(paciente=paciente, finalizada=False).first()
+                if cita:
+                    cita.finalizada = True  # Marcar la cita como finalizada
+                    cita.save()
+                    messages.success(request, "Cita finalizada exitosamente.")
 
             messages.success(request, "Ficha clínica guardada exitosamente.")
             return redirect('administrativo:medico_main')  # Ajusta esta URL según tus necesidades

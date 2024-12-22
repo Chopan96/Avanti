@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Usuario, Paciente, Medico, Administrativo, Sala, Sucursal, Prevision
+from .models import Usuario, Paciente, Medico, Administrativo, Sala, Sucursal, Prevision, Especialidad
 
 class CustomUserAdmin(UserAdmin):
     # Campos para la vista de detalle del usuario
@@ -35,3 +35,4 @@ admin.site.register(Administrativo)
 admin.site.register(Sala)
 admin.site.register(Sucursal)
 admin.site.register(Prevision)
+admin.site.register(Especialidad)

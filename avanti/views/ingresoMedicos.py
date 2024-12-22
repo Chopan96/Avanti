@@ -4,6 +4,7 @@ from ..models import Medico, Usuario
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.contrib.auth.models import Group
+from django.contrib import messages
 
 # Verificar si el usuario pertenece al grupo 'Personal Administrativo'
 def is_personal(user):
@@ -15,17 +16,28 @@ def registrar_medico(request):
     if request.method == 'POST':
         usuario_form = UsuarioForm(request.POST)
         medico_form = MedicoForm(request.POST)
-        if usuario_form.is_valid() and medico_form.is_valid():
-            usuario = usuario_form.save(commit=False)
-            usuario.set_password(usuario_form.cleaned_data['password1'])  # Guarda contraseña
-            usuario.save()
-            grupo_medico = Group.objects.get(name='Medico')  # Asegúrate de que este grupo exista
-            usuario.groups.add(grupo_medico)
-            medico = medico_form.save(commit=False)
-            medico.usuario = usuario  # Relaciona el médico con el usuario
-            medico.save()
+        
+        try:
+            if usuario_form.is_valid() and medico_form.is_valid():
+                usuario = usuario_form.save(commit=False)
+                usuario.set_password(usuario_form.cleaned_data['password1'])  # Guarda contraseña
+                usuario.save()
 
-            return redirect('administrativo:lista_medicos')  # Cambia a la URL deseada
+                grupo_medico = Group.objects.get(name='Medico')  # Asegúrate de que este grupo exista
+                usuario.groups.add(grupo_medico)
+
+                medico = medico_form.save(commit=False)
+                medico.usuario = usuario  # Relaciona el médico con el usuario
+
+
+                medico.save()
+
+                messages.success(request, "Médico registrado exitosamente.")
+                return redirect('administrativo:lista_medicos')  # Cambia a la URL deseada
+        except ValueError as e:
+            # Captura el error de RUT no válido y lo añade como mensaje de error
+            messages.error(request, str(e))
+
     else:
         usuario_form = UsuarioForm()
         medico_form = MedicoForm()
@@ -34,6 +46,7 @@ def registrar_medico(request):
         'usuario_form': usuario_form,
         'medico_form': medico_form,
     })
+
 
 
 @login_required

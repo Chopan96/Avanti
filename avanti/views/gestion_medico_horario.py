@@ -21,12 +21,12 @@ def ver_horarios_medico(request):
     for horario in horarios:
         color = '#77DD77' if horario.disponible else '#FF6961'  # Verde para disponible, rojo para ocupado
         evento = {
-            'id': horario.horario,  # Usamos la clave primaria `horario`
-            'title': 'Disponible' if horario.disponible else 'Ocupado',
+            'id': horario.horario,
+            'title': 'Finalizada' if any(cita.finalizada for cita in horario.citas.all()) else ('Disponible' if horario.disponible else 'Ocupado'),
             'start': horario.fechainicio.isoformat(),
             'end': horario.fechafin.isoformat(),
-            'backgroundColor': color,
-            'borderColor': color,
+            'backgroundColor': '#CCCCCC' if any(cita.finalizada for cita in horario.citas.all()) else ('#77DD77' if horario.disponible else '#FF6961'),
+            'borderColor': '#CCCCCC' if any(cita.finalizada for cita in horario.citas.all()) else ('#77DD77' if horario.disponible else '#FF6961'),
         }
         eventos.append(evento)
 
@@ -57,3 +57,23 @@ def obtener_detalles_cita(request, horario_id):
         return JsonResponse({'success': False, 'error': 'No hay cita asociada al horario seleccionado.'})
     except Horario.DoesNotExist:
         return JsonResponse({'success': False, 'error': 'Horario no encontrado.'})
+    
+@login_required
+@user_passes_test(is_medico)
+def finalizar_cita(request, horario_id):
+    if request.method == 'POST':
+        try:
+            # Obtener el horario y verificar que pertenece al médico logueado
+            horario = Horario.objects.get(pk=horario_id, medico__usuario=request.user)
+            
+            # Obtener la primera cita asociada al horario
+            cita = horario.citas.first()
+            if cita:
+                cita.finalizada = True  # Asegúrate de tener este campo en tu modelo
+                cita.save()
+                return JsonResponse({'success': True, 'message': 'Cita finalizada con éxito.'})
+            else:
+                return JsonResponse({'success': False, 'error': 'No hay cita asociada al horario.'})
+        except Horario.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Horario no encontrado.'})
+    return JsonResponse({'success': False, 'error': 'Método no permitido.'}, status=405)

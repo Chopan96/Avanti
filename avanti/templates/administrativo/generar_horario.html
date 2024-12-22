@@ -1,34 +1,43 @@
-
-
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}Generar Horarios{% endblock %}
 
 {% block extra_css %}
-
 <link rel="stylesheet" href="{% static 'css/formulario.css' %}">
 {% endblock %}
-
 
 {% block content %}
 <div class="container mt-4">
     <div class="formulario">
         <h2>Generar Horarios para el Médico {{ medico.usuario.first_name }} {{ medico.usuario.last_name }}</h2>
-        <form method="post" class="formulario">
+        <form method="POST" class="formulario">
             {% csrf_token %}
             {{ form.as_p }}
+
             <button type="submit" class="btn btn-success">Generar Horarios</button>
             <a href="{% url 'administrativo:lista_medicos' %}" class="btn btn-secondary">Cancelar</a>
         </form>
     </div>
 </div>
+
 <script>
-    const form = document.querySelector('form');
-    form.addEventListener('submit', (event) => {
-        const desde = document.querySelector('#desde').value;
-        const hasta = document.querySelector('#hasta').value;
-        console.log('Desde:', desde);
-        console.log('Hasta:', hasta);
-    });
+    function update_salas() {
+        const sucursalId = document.getElementById('id_sucursal').value;
+        console.log('Sucursal ID seleccionado:', sucursalId);  // Verifica si el ID es correcto
+    
+        fetch(`/api/salas/${sucursalId}/`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Datos de salas recibidos:', data);  // Verifica los datos de respuesta
+                const salaSelect = document.getElementById('id_sala');
+                salaSelect.innerHTML = ''; // Limpiar las salas actuales
+                data.salas.forEach(sala => {
+                    const option = document.createElement('option');
+                    option.value = sala.id;
+                    option.text = sala.nombre;
+                    salaSelect.appendChild(option);
+                });
+            });
+    }
 </script>
 {% endblock %}

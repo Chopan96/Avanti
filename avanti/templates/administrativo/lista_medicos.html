@@ -12,6 +12,24 @@
     
     {% block content %}
     <div class="container mt-4" id="mensaje">
+        <!-- Modal de confirmación de eliminación -->
+        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmación de eliminación</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        ¿Estás seguro de que deseas eliminar este médico?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <a id="confirmDeleteButton" href="#" class="btn btn-danger">Eliminar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="formulario">
             <h1 class="text-center mb-4">Lista de Médicos</h1>
             <div class="table-responsive">
@@ -63,9 +81,11 @@
                                    class="btn btn-sm btn-warning mb-1">
                                     Editar
                                 </a>
-                                <a href="{% url 'administrativo:eliminar_medico' medico.usuario.rut %}" 
-                                   class="btn btn-sm btn-danger"
-                                   onclick="return confirm('¿Estás seguro de que deseas eliminar este médico?');">
+                                <a href="#" 
+                                    class="btn btn-sm btn-danger" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#confirmDeleteModal"
+                                    data-rut="{{ medico.usuario.rut }}">
                                     Eliminar
                                 </a>
                             </td>
@@ -88,7 +108,17 @@
     
 
     </div>
-    
+    <script>
+        // Al abrir el modal, setea el RUT del médico a eliminar
+        var deleteModal = document.getElementById('confirmDeleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget; // El botón que activó el modal
+            var rut = button.getAttribute('data-rut'); // Obtén el RUT del atributo 'data-rut'
+            var confirmDeleteButton = deleteModal.querySelector('#confirmDeleteButton');
+            console.log("RUT a eliminar: ", rut);
+            // Cambia el href del botón de confirmación al enlace de eliminación real
+            confirmDeleteButton.setAttribute('href', '/eliminar_medico/' + rut + '/');
+        });
+    </script>
     <!-- Cargar el archivo JS -->
-    <script src="{% static 'js/validar_rut.js' %}"></script>
     {% endblock %}

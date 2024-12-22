@@ -1,18 +1,26 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
+from ..utils.utils import validar_rut, normalizar_y_validar_rut  # Asegúrate de que la ruta sea correcta
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, rut, email, password=None, **extra_fields):
         """Crea y devuelve un usuario con rut, email y password."""
         if not rut:
-            raise ValueError('El rut debe ser proporcionado')
+            raise ValueError('El RUT debe ser proporcionado')
+
+        # Validar y normalizar el RUT
+        rut_normalizado = normalizar_y_validar_rut(rut)
+        if not rut_normalizado:
+            raise ValueError('El RUT proporcionado no es válido')
+
         email = self.normalize_email(email)
-        user = self.model(rut=rut, email=email, **extra_fields)
+        user = self.model(rut=rut_normalizado, email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
     def create_superuser(self, rut, email, password=None, **extra_fields):
+        """Crea y devuelve un superusuario."""
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         
@@ -21,7 +29,7 @@ class CustomUserManager(BaseUserManager):
         if not extra_fields.get('is_superuser'):
             raise ValueError('El superusuario debe tener is_superuser=True.')
 
-        return Usuario.objects.create_user(rut, email, password, **extra_fields)
+        return self.create_user(rut, email, password, **extra_fields)
 
 
 class Usuario(AbstractUser):
@@ -40,9 +48,14 @@ class Usuario(AbstractUser):
     def __str__(self):
         return self.rut
 
-    # Sobrescribe el método create_superuser para usar rut en lugar de username
-    def create_superuser(self, rut, email, password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-
-        return self._create_user(rut, email, password, **extra_fields)
+    def save(self, *args, **kwargs):
+        """
+        Sobrescribe el método save para validar y normalizar el RUT
+        antes de guardar el usuario.
+        """
+        # Validar y normalizar el RUT
+        rut_normalizado = normalizar_y_validar_rut(self.rut)
+        if not rut_normalizado:
+            raise ValueError(f"El RUT {self.rut} no es válido.")
+        self.rut = rut_normalizado
+        super().save(*args, **kwargs)  # Llama al método save original

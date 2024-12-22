@@ -22,3 +22,4 @@ from .sucursal import Sucursal
 from .usuario import Usuario
 from .fichaclinica import FichaClinica
 from .consulta import Consulta
+from .especialidad import Especialidad

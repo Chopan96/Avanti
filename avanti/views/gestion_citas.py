@@ -11,7 +11,7 @@ from django.urls import reverse
 import uuid
 from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
-from ..utils import generar_password_temporal,normalizar_rut
+from ..utils.utils import generar_password_temporal,normalizar_rut
 logger = logging.getLogger(__name__)
 from django.contrib.auth.models import Group
 
@@ -215,7 +215,7 @@ def listado_citas(request, rut):
         paciente = Paciente.objects.get(usuario__rut=rut)
 
         # Obtener las citas asociadas al paciente
-        citas = Cita.objects.filter(paciente=paciente)
+        citas = Cita.objects.filter(paciente=paciente, finalizada=False)
 
         # Verifica que las citas existen
         if not citas.exists():

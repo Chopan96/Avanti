@@ -33,13 +33,14 @@ AUTH_USER_MODEL = 'avanti.Usuario'
 # Application definition
 
 INSTALLED_APPS = [
+    'avanti',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'avanti',
+    
 ]
 
 MIDDLEWARE = [
@@ -106,7 +107,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+AUTHENTICATION_BACKENDS = [
+    'avanti.utils.authentication_backends.CustomAuthenticationBackend',  # Ruta a tu backend personalizado
+    'django.contrib.auth.backends.ModelBackend',  # Backend predeterminado (opcional)
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/

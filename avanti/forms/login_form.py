@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
-from ..utils import normalizar_rut
+from ..utils.utils import normalizar_rut
 
 class CustomLoginForm(AuthenticationForm):
     username = forms.CharField(

@@ -30,7 +30,7 @@ urlpatterns = [
     path('api/horarios/', views.HorarioFullCalendarView.as_view(), name='api_horarios'),
     path('api/horarios/<uuid:horario_id>/editar/', views.EditarHorarioView.as_view(), name='editar_horario'),
     path('api/horarios/<uuid:horario_id>/eliminar/', views.EliminarHorarioView.as_view(), name='eliminar_horario'), 
-    path('generar_horarios/<str:medico_rut>/', views.generar_horarios_view, name='generar_horarios'),
+    path('generar_horarios/<str:rut_medico>/', views.generar_horario, name='generar_horarios'),
     path('ver-horarios/<str:medico_rut>/', views.ver_horarios, name='ver_horarios'),
     #Gestion Pacientes
     path('pacientes/', views.listar_pacientes, name='listar_pacientes'),
@@ -61,6 +61,9 @@ urlpatterns = [
     #Horario Vista Medico
     path('horarios/', views.ver_horarios_medico, name='ver_horarios'),
     path('horarios/<uuid:horario_id>/detalles/', views.obtener_detalles_cita, name='detalles_cita'),
+    path('horarios/<uuid:horario_id>/finalizar/', views.finalizar_cita, name='finalizar_cita'),
+    #API para las salas
+    path('api/salas/<str:sucursal_id>/', views.salas_por_sucursal, name='salas_por_sucursal'),
 ]
 
 

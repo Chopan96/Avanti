@@ -5,100 +5,106 @@ from datetime import timedelta,datetime
 from django.http import JsonResponse
 from datetime import datetime
 import pytz
+import uuid
 from ..forms import GenerarHorarioForm
 import json
+from django.http import Http404
 from rest_framework.views import APIView
 from django.utils import timezone
+from django.utils.timezone import make_aware
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 # Verificar si el usuario pertenece al grupo 'Personal Administrativo'
 def is_personal(user):
     return user.groups.filter(name='Personal Administrativo').exists()
 
+DIAS_MAPA = {
+    'Monday': 'L',
+    'Tuesday': 'M',
+    'Wednesday': 'X',
+    'Thursday': 'J',
+    'Friday': 'V',
+    'Saturday': 'S',
+    'Sunday': 'D',
+}
+
 @login_required
 @user_passes_test(is_personal)
-def generar_horarios_view(request, medico_rut):
-    medico = get_object_or_404(Medico, usuario__rut=medico_rut)
 
-    if request.method == "POST":
-        form = GenerarHorarioForm(request.POST)
+def generar_horario(request, rut_medico):
+    try:
+        # Obtener el médico mediante su RUT
+        medico = Medico.objects.get(usuario__rut=rut_medico)
+    except Medico.DoesNotExist:
+        return JsonResponse({"error": "Médico no encontrado"}, status=404)
+
+    if request.method == 'POST':
+        form = GenerarHorarioForm(request.POST, medico=medico)
+
+        # Obtener el valor de la sucursal seleccionada
+        sucursal_id = request.POST.get('sucursal')
+
+        if sucursal_id:
+            # Filtrar las salas disponibles según la sucursal seleccionada
+            salas_disponibles = Sala.objects.filter(sucursal__sucursal=sucursal_id)
+            form.fields['sala'].choices = [(sala.id, sala.sala) for sala in salas_disponibles]
+            form.fields['sala'].queryset = salas_disponibles  # Asignar el queryset filtrado de salas
+
         if form.is_valid():
-            sala = form.cleaned_data["sala"]
-            desde = form.cleaned_data["desde"]
-            hasta = form.cleaned_data["hasta"]
+            sucursal_id = form.cleaned_data['sucursal']
+            sala = form.cleaned_data['sala']
+            disponibilidades_ids = form.cleaned_data['disponibilidad'].values_list('disponibilidad', flat=True)
+            fecha_inicio = form.cleaned_data['fecha_inicio']
+            fecha_fin = form.cleaned_data['fecha_fin']
+            hora_inicio = form.cleaned_data['hora_inicio']
+            hora_fin = form.cleaned_data['hora_fin']
 
-            # Lógica para generar horarios
-            horarios = generar_horarios(desde, hasta, medico, sala)
+            # Validar que la fecha de inicio no sea mayor a la fecha de fin
+            if fecha_inicio > fecha_fin:
+                form.add_error('fecha_inicio', 'La fecha de inicio no puede ser mayor a la fecha de fin.')
+                return render(request, 'administrativo/generar_horario.html', {'form': form, 'medico': medico})
 
-            # Agregar un mensaje de éxito
-            messages.success(request, f"Se generaron {len(horarios)} horarios para el médico {medico.usuario.rut}.")
+            # Traer todas las disponibilidades del médico y filtrar por las seleccionadas
+            disponibilidades = Disponibilidad.objects.filter(
+                medico=medico, disponibilidad__in=disponibilidades_ids
+            )
+            
+            current_date = fecha_inicio
+            while current_date <= fecha_fin:
+                day_name = current_date.strftime('%A')  # Día en inglés
+                day_initial = DIAS_MAPA.get(day_name)  # Convertir al formato español
+
+                # Filtrar disponibilidades del día correspondiente
+                disponibilidades_dia = disponibilidades.filter(dia=day_initial)
+
+                for disponibilidad in disponibilidades_dia:
+                    current_time = make_aware(datetime.combine(current_date, hora_inicio))
+                    end_time = make_aware(datetime.combine(current_date, hora_fin))
+
+                    while current_time + timedelta(minutes=30) <= end_time:
+                        if disponibilidad.horainicio <= current_time.time() <= disponibilidad.horafin:
+                            Horario.objects.create(
+                                horario=uuid.uuid4(),
+                                medico=medico,
+                                disponibilidad=disponibilidad,
+                                fechainicio=current_time,
+                                fechafin=current_time + timedelta(minutes=30),
+                                sala=sala,
+                                disponible=True
+                            )
+                        current_time += timedelta(minutes=30)
+
+                current_date += timedelta(days=1)
+
+            messages.success(request, 'Horarios generados exitosamente.')
             return redirect('administrativo:lista_medicos')
         else:
-            # Agregar un mensaje de error con los errores del formulario
-            messages.error(request, "Hubo un error al procesar el formulario. Revisa los datos ingresados.")
-            return redirect('administrativo:lista_medicos')
+            messages.error(request, 'Corrige los errores en el formulario.')
+
     else:
-        form = GenerarHorarioForm()
-        return render(request, 'administrativo/generar_horario.html', {'form': form, 'medico': medico})
-
-
-def generar_horarios(desde, hasta, medico, sala, zona_horaria='America/Santiago'):
-    """
-    Genera horarios para un médico en un rango de fechas basado en sus disponibilidades.
-    """
-    horarios_creados = []
+        form = GenerarHorarioForm(medico=medico)
     disponibilidades = Disponibilidad.objects.filter(medico=medico)
-    tz = pytz.timezone(zona_horaria)
-    desde = tz.localize(desde) if desde.tzinfo is None else desde
-    hasta = tz.localize(hasta) if hasta.tzinfo is None else hasta
-
-    # Mapeo de los días de la semana al formato usado en el modelo
-    DIAS_SEMANA = {
-        0: 'L',  # Monday
-        1: 'M',  # Tuesday
-        2: 'X',  # Wednesday
-        3: 'J',  # Thursday
-        4: 'V',  # Friday
-        5: 'S',  # Saturday
-        6: 'D',  # Sunday
-    }
-
-    current_date = desde.date()
-    end_date = hasta.date()
-
-    while current_date <= end_date:
-        dia_semana = DIAS_SEMANA[current_date.weekday()]  # weekday() devuelve un entero (0=Lunes, 6=Domingo)
-
-        disponibilidades_dia = disponibilidades.filter(dia=dia_semana)
-
-        for disponibilidad in disponibilidades_dia:
-            start_time = tz.localize(datetime.combine(current_date, disponibilidad.horainicio))
-            end_time = tz.localize(datetime.combine(current_date, disponibilidad.horafin))
-            start_time = max(start_time, desde)
-            end_time = min(end_time, hasta)
-
-            current_start_time = start_time
-            while current_start_time + timedelta(minutes=30) <= end_time:
-                if not Horario.objects.filter(
-                    medico=medico,
-                    sala=sala,
-                    fechainicio=current_start_time,
-                    fechafin=current_start_time + timedelta(minutes=30)
-                ).exists():
-                    horario = Horario.objects.create(
-                        medico=medico,
-                        sala=sala,
-                        fechainicio=current_start_time,
-                        fechafin=current_start_time + timedelta(minutes=30),
-                        disponibilidad=disponibilidad
-                    )
-                    horarios_creados.append(horario)
-
-                current_start_time += timedelta(minutes=30)
-
-        current_date += timedelta(days=1)
-
-    return horarios_creados
+    return render(request, 'administrativo/generar_horario.html', {'form': form, 'medico': medico})
 
 
 @login_required

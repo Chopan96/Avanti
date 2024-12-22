@@ -20,3 +20,7 @@ class Disponibilidad(models.Model):
     class Meta:
         db_table = 'disponibilidad'
         unique_together = ('medico', 'dia', 'horainicio', 'horafin')
+
+
+    def __str__(self):
+        return f"{self.get_dia_display()} - {self.horainicio.strftime('%H:%M')} - {self.horafin.strftime('%H:%M')}"

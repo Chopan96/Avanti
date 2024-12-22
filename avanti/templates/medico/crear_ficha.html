@@ -17,6 +17,7 @@
     </div>
     {% endif %}
     <h1>{% if ficha_form.instance.id %}Editar Ficha Clínica{% else %}Crear Ficha Clínica{% endif %}</h1>
+    <hr>
     <form method="post" id="ficha-form">
         {% csrf_token %}
         
@@ -95,10 +96,14 @@
         </div>
 
         <!-- Botones de Enviar y Cancelar -->
-        <div class="form-buttons">
-            <button type="submit" class="btn btn-primary">Guardar</button>
-            <a href="{% url 'administrativo:medico_main' %}" class="btn btn-secondary">Cancelar</a>
-        </div>
+        <div class="form-buttons justify-content-center row mt-5">
+            <div class="col-auto">
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'administrativo:medico_main' %}" class="btn btn-secondary">Cancelar</a>
+            </div>
+</div>
     </form>
 </div>
 <script src="{% static 'js/rut_utils.js' %}"></script>
