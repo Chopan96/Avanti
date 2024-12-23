@@ -15,6 +15,25 @@ pip install djangorestframework
 pip install pytz
 pip install tzdata
 
+GIT
+Bajar el proyecto de git
+    -Configurar:    
+    git remote add origin https://github.com/Chopan96/Avanti.git
+    git branch -M omega
+
+Subir al repositorio
+-Pasos para subir a git
+git add .
+git commit -m "comentario"
+git push -u origin omega
+
+
+Migraciones
+python manage.py migrate avanti 0001_initial
+python manage.py migrate avanti 0002_addgroups
+python manage.py migrate avanti 0003_cargar_datos
+python manage.py migrate avanti 0004_cita_finalizada
+python manage.py migrate
 
 gitignore
 

@@ -8,7 +8,7 @@ class GenerarHorarioForm(forms.Form):
     # Campo para seleccionar la sucursal
     sucursal = forms.ChoiceField(
         label='Sucursal',
-        choices=[('', 'Selecciona una sucursal')] + [(s.sucursal, s.nombre) for s in Sucursal.objects.all()],
+        choices=[],
         required=True
     )
 
@@ -41,7 +41,10 @@ class GenerarHorarioForm(forms.Form):
     # Campo para seleccionar la fecha fin
     fecha_fin = forms.DateField(
         label='Fecha de Fin',
-        widget=DateInput(attrs={'type': 'date'}),
+        widget=DateInput(attrs={
+            'type': 'date',
+            'min': date.today().strftime('%Y-%m-%d')
+            }),
         required=True
     )
 
@@ -70,6 +73,14 @@ class GenerarHorarioForm(forms.Form):
             self.fields['disponibilidad'].queryset = Disponibilidad.objects.filter(medico=medico)
         else:
             self.fields['disponibilidad'].queryset = Disponibilidad.objects.none()
+
+        # Cargar las sucursales solo si existen en la base de datos
+        try:
+            self.fields['sucursal'].choices = [('', 'Selecciona una sucursal')] + [
+                (s.sucursal, s.nombre) for s in Sucursal.objects.all()
+            ]
+        except Exception as e:
+            self.fields['sucursal'].choices = [('', 'Selecciona una sucursal')]
 
     def clean(self):
         cleaned_data = super().clean()
@@ -112,4 +123,5 @@ class GenerarHorarioForm(forms.Form):
                 raise ValidationError("Ya existe un horario que se solapa con este rango de tiempo para la sala seleccionada.")
 
         return cleaned_data
+
 
